@@ -3,13 +3,35 @@ Routes and views for the flask application.
 """
 
 from datetime import datetime
-from flask import render_template, send_from_directory
+from flask import render_template, send_from_directory, flash, redirect
 from TB_Process import app
+from TB_Process.forms import LoginForm
 
-@app.route('/Login_v14/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     """Renders the login page."""
-    return render_template('login.html')
+    form = LoginForm()
+    if form.validate_on_submit():
+            flash('Login requested for user {}, remember_me={}'.format(
+                form.username.data, form.remember_me.data))
+            return redirect('/home')
+    return render_template('login.html', form = form)
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login2():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid username or password')
+            return redirect(url_for('login'))
+        login_user(user, remember=form.remember_me.data)
+        return redirect(url_for('index'))
+    return render_template('login.html', title='Sign In', form=form)
+
 
 @app.route('/register')
 def register():

@@ -28,7 +28,12 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="config.py" />
     <Compile Include="runserver.py" />
+    <Compile Include="TB_Process\forms.py" />
+    <Compile Include="TB_Process\models.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="TB_Process\__init__.py" />
     <Compile Include="TB_Process\views.py" />
   </ItemGroup>
@@ -36,8 +41,24 @@
     <Folder Include="TB_Process\" />
     <Folder Include="TB_Process\static\" />
     <Folder Include="TB_Process\static\content\" />
+    <Folder Include="TB_Process\static\css\" />
     <Folder Include="TB_Process\static\fonts\" />
+    <Folder Include="TB_Process\static\js\" />
     <Folder Include="TB_Process\static\scripts\" />
+    <Folder Include="TB_Process\static\vendor\" />
+    <Folder Include="TB_Process\static\vendor\animate\" />
+    <Folder Include="TB_Process\static\vendor\animsition\" />
+    <Folder Include="TB_Process\static\vendor\animsition\css\" />
+    <Folder Include="TB_Process\static\vendor\animsition\js\" />
+    <Folder Include="TB_Process\static\vendor\bootstrap\" />
+    <Folder Include="TB_Process\static\vendor\bootstrap\css\" />
+    <Folder Include="TB_Process\static\vendor\bootstrap\js\" />
+    <Folder Include="TB_Process\static\vendor\countdowntime\" />
+    <Folder Include="TB_Process\static\vendor\css-hamburgers\" />
+    <Folder Include="TB_Process\static\vendor\daterangepicker\" />
+    <Folder Include="TB_Process\static\vendor\jquery\" />
+    <Folder Include="TB_Process\static\vendor\perfect-scrollbar\" />
+    <Folder Include="TB_Process\static\vendor\select2\" />
     <Folder Include="TB_Process\templates\" />
   </ItemGroup>
   <ItemGroup>
@@ -45,10 +66,13 @@
     <Content Include="TB_Process\static\content\bootstrap.css" />
     <Content Include="TB_Process\static\content\bootstrap.min.css" />
     <Content Include="TB_Process\static\content\site.css" />
+    <Content Include="TB_Process\static\css\main.css" />
+    <Content Include="TB_Process\static\css\util.css" />
     <Content Include="TB_Process\static\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="TB_Process\static\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="TB_Process\static\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="TB_Process\static\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="TB_Process\static\js\main.js" />
     <Content Include="TB_Process\static\scripts\bootstrap.js" />
     <Content Include="TB_Process\static\scripts\bootstrap.min.js" />
     <Content Include="TB_Process\static\scripts\jquery-1.10.2.intellisense.js" />
@@ -64,10 +88,47 @@
     <Content Include="TB_Process\static\scripts\respond.js" />
     <Content Include="TB_Process\static\scripts\respond.min.js" />
     <Content Include="TB_Process\static\scripts\_references.js" />
+    <Content Include="TB_Process\static\vendor\animate\animate.css" />
+    <Content Include="TB_Process\static\vendor\animsition\css\animsition.css" />
+    <Content Include="TB_Process\static\vendor\animsition\css\animsition.min.css" />
+    <Content Include="TB_Process\static\vendor\animsition\js\animsition.js" />
+    <Content Include="TB_Process\static\vendor\animsition\js\animsition.min.js" />
+    <Content Include="TB_Process\static\vendor\bootstrap\css\bootstrap-grid.css" />
+    <Content Include="TB_Process\static\vendor\bootstrap\css\bootstrap-grid.css.map" />
+    <Content Include="TB_Process\static\vendor\bootstrap\css\bootstrap-grid.min.css" />
+    <Content Include="TB_Process\static\vendor\bootstrap\css\bootstrap-grid.min.css.map" />
+    <Content Include="TB_Process\static\vendor\bootstrap\css\bootstrap-reboot.css" />
+    <Content Include="TB_Process\static\vendor\bootstrap\css\bootstrap-reboot.css.map" />
+    <Content Include="TB_Process\static\vendor\bootstrap\css\bootstrap-reboot.min.css" />
+    <Content Include="TB_Process\static\vendor\bootstrap\css\bootstrap-reboot.min.css.map" />
+    <Content Include="TB_Process\static\vendor\bootstrap\css\bootstrap.css" />
+    <Content Include="TB_Process\static\vendor\bootstrap\css\bootstrap.css.map" />
+    <Content Include="TB_Process\static\vendor\bootstrap\css\bootstrap.min.css" />
+    <Content Include="TB_Process\static\vendor\bootstrap\css\bootstrap.min.css.map" />
+    <Content Include="TB_Process\static\vendor\bootstrap\js\bootstrap.js" />
+    <Content Include="TB_Process\static\vendor\bootstrap\js\bootstrap.min.js" />
+    <Content Include="TB_Process\static\vendor\bootstrap\js\popper.js" />
+    <Content Include="TB_Process\static\vendor\bootstrap\js\popper.min.js" />
+    <Content Include="TB_Process\static\vendor\bootstrap\js\tooltip.js" />
+    <Content Include="TB_Process\static\vendor\countdowntime\countdowntime.js" />
+    <Content Include="TB_Process\static\vendor\css-hamburgers\hamburgers.css" />
+    <Content Include="TB_Process\static\vendor\css-hamburgers\hamburgers.min.css" />
+    <Content Include="TB_Process\static\vendor\daterangepicker\daterangepicker.css" />
+    <Content Include="TB_Process\static\vendor\daterangepicker\daterangepicker.js" />
+    <Content Include="TB_Process\static\vendor\daterangepicker\moment.js" />
+    <Content Include="TB_Process\static\vendor\daterangepicker\moment.min.js" />
+    <Content Include="TB_Process\static\vendor\jquery\jquery-3.2.1.min.js" />
+    <Content Include="TB_Process\static\vendor\perfect-scrollbar\perfect-scrollbar.css" />
+    <Content Include="TB_Process\static\vendor\perfect-scrollbar\perfect-scrollbar.min.js" />
+    <Content Include="TB_Process\static\vendor\select2\select2.css" />
+    <Content Include="TB_Process\static\vendor\select2\select2.js" />
+    <Content Include="TB_Process\static\vendor\select2\select2.min.css" />
+    <Content Include="TB_Process\static\vendor\select2\select2.min.js" />
     <Content Include="TB_Process\templates\about.html" />
     <Content Include="TB_Process\templates\contact.html" />
     <Content Include="TB_Process\templates\index.html" />
     <Content Include="TB_Process\templates\layout.html" />
+    <Content Include="TB_Process\templates\login.html" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="env\">
