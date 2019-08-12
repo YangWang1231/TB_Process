@@ -3,8 +3,18 @@ Routes and views for the flask application.
 """
 
 from datetime import datetime
-from flask import render_template
+from flask import render_template, send_from_directory
 from TB_Process import app
+
+@app.route('/Login_v14/login')
+def login():
+    """Renders the login page."""
+    return render_template('login.html')
+
+@app.route('/register')
+def register():
+    """Renders the register page."""
+    return "this is register page, to be complete."
 
 @app.route('/')
 @app.route('/home')
