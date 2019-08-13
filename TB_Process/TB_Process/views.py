@@ -58,6 +58,14 @@ def contact():
         message='Your contact page.'
     )
 
+from jinja2 import Template
+@app.route('/personpage')
+def personpage():
+    """Renders the contact page."""
+    template = Template('<H1>Hello {{ name }}!</H1>')
+    string = template.render(name = current_user.username)
+    return string
+
 @app.route('/about')
 def about():
     """Renders the about page."""

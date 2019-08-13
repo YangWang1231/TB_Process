@@ -29,6 +29,9 @@
                     <li><a href="{{ url_for('contact') }}">Contact</a></li>
                     <li><a href="{{ url_for('login') }}">Log in</a></li>
                     <li><a href="{{ url_for('register') }}">Register</a></li>
+                    {% if current_user.username %}
+                    <li><a href="{{ url_for('personpage') }}">Hi, {{ current_user.username }}!</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

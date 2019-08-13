@@ -1,10 +1,7 @@
 #!/usr/bin/python
  #coding:utf-8
-
 import sqlite3
 from    sqlite3 import Error
-
-
 
 
 class process_db(object):
@@ -118,7 +115,17 @@ class process_db(object):
         cur.execute(sql, user)
         return cur.lastrowid
 
-    def get_user_info(self, username):
+    def get_user_by_id(self, id):
+        cur = self.db_conn.cursor()
+        sql = r'''select * from user where id = '%d' '''  % int(id)
+        cur.execute(sql)
+        result = cur.fetchone()
+        if result is not None:
+            userid , name, password= result['id'], result['name'], result['password']
+            return (userid, name, password)
+        return -1,"",""
+
+    def get_user_by_name(self, username):
         cur = self.db_conn.cursor()
         sql = r'''select * from user where name = '%s' '''  % username
         cur.execute(sql)

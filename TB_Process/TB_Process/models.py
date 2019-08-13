@@ -14,7 +14,7 @@ def get_User_by_name(username):
     user = User()
     db_path = Config.SQLALCHEMY_DATABASE_URI
     db_obj = process_db(db_path)
-    id, name, password = db_obj.get_user_info(username)
+    id, name, password = db_obj.get_user_by_name(username)
     if id is not -1:
         user.id = id
         user.username = name
@@ -23,6 +23,19 @@ def get_User_by_name(username):
     else:
         return None
 
+
+def get_User_by_id(id):
+    user = User()
+    db_path = Config.SQLALCHEMY_DATABASE_URI
+    db_obj = process_db(db_path)
+    id, name, password = db_obj.get_user_by_id(int(id))
+    if id is not -1:
+        user.id = id
+        user.username = name
+        user.password_hash = "433808" #fake
+        return user
+    else:
+        return None
 
 class User(UserMixin):
     def __init__(self):
@@ -43,8 +56,4 @@ class User(UserMixin):
 
 @login.user_loader
 def load_user(id):
-    user_fake = User()
-    user_fake.id = 1
-    user_fake.username = u'王洋'
-    return user_fake
-   # return User.query.get(int(id))
+    return get_User_by_id(id)
