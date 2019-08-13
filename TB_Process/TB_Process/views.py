@@ -15,7 +15,7 @@ def login():
             flash('Login requested for user {}, remember_me={}'.format(
                 form.username.data, form.remember_me.data))
             return redirect('/home')
-    return render_template('login.html', form = form)
+    return render_template('login.html', title='Sign In', form = form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
