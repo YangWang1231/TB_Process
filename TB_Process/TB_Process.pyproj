@@ -28,12 +28,13 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="config.py" />
+    <Compile Include="TB_Process\config.py" />
     <Compile Include="runserver.py" />
     <Compile Include="TB_Process\forms.py" />
     <Compile Include="TB_Process\models.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TB_Process\store_db_sqlit3.py" />
     <Compile Include="TB_Process\__init__.py" />
     <Compile Include="TB_Process\views.py" />
   </ItemGroup>
