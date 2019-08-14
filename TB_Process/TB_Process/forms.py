@@ -28,3 +28,11 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Please use a different email address.')
+
+from flask_wtf.file import FileField, FileRequired, FileAllowed
+class UploadForm(FlaskForm):
+    photo = FileField(validators=[
+        #FileAllowed(['rar', 'zip'], u'Only rar files'), 
+        FileAllowed(['jpg','jpeg','png','gif']) ,
+        FileRequired(u'not choican a file')])
+    submit = SubmitField(u'Upload')

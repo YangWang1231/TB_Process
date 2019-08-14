@@ -40,14 +40,18 @@ def register():
     """Renders the register page."""
     return "this is register page, to be complete."
 
+
+from forms import UploadForm
 @app.route('/')
 @app.route('/home')
 def home():
     """Renders the home page."""
+    form = UploadForm()
     return render_template(
         'index.html',
         title='Home Page',
         year=datetime.now().year,
+        form = form
     )
 
 @app.route('/contact')
@@ -86,8 +90,10 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in Config.ALLOWED_EXTENSIONS
 
-@app.route('/upload', methods=['GET', 'POST'])
+#@app.route('/upload', methods=['GET', 'POST'])
+@app.route('/upload', methods=['POST'])
 def upload_file():
+    form = UploadForm()
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
