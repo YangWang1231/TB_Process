@@ -97,8 +97,7 @@ def upload_file():
             #savepath = os.path.join(app.config['UPLOAD_FOLDER'],filename)
             savepath = os.path.join(app.config['UPLOAD_FOLDER'],file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
-            return redirect(url_for('upload_file',
-                                    filename=file.filename))
+            return redirect(url_for('uploaded_file', filename=file.filename))
     return '''
     <!doctype html>
     <title>Upload new File</title>
@@ -108,3 +107,9 @@ def upload_file():
          <input type=submit value=Upload>
     </form>
     '''
+
+from flask import send_from_directory
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
