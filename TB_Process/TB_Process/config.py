@@ -9,3 +9,5 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         os.path.join(basedir, 'flaskr.sqlite')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    UPLOAD_FOLDER = r'C:\Users\Administrator\source\repos\TB_Process\TB_Process\TB_Process\uploads'
+    ALLOWED_EXTENSIONS = set(['txt', 'rar', 'zip', 'jpg', 'jpeg', 'gif'])

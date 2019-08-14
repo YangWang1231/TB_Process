@@ -77,3 +77,34 @@ def about():
         year=datetime.now().year,
         message='Your application description page.'
     )
+
+import os
+from config import Config
+from werkzeug import secure_filename
+def allowed_file(filename):
+    #anotherfilename = filename.encode('utf-8')
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in Config.ALLOWED_EXTENSIONS
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            #不能处理中文文件名
+            #处理方法见 ’secure_filename 对中文不支持的处理‘
+#            filename = secure_filename(file.filename.encode('utf-8'))
+            #savepath = os.path.join(app.config['UPLOAD_FOLDER'],filename)
+            savepath = os.path.join(app.config['UPLOAD_FOLDER'],file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+            return redirect(url_for('upload_file',
+                                    filename=file.filename))
+    return '''
+    <!doctype html>
+    <title>Upload new File</title>
+    <h1>Upload new File</h1>
+    <form action="" method=post enctype=multipart/form-data>
+      <p><input type=file name=file>
+         <input type=submit value=Upload>
+    </form>
+    '''
