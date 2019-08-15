@@ -42,8 +42,8 @@
         </p>
         <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_file') }}">
             {{ form.hidden_tag() }}
-            {{ form.photo }}
-            {% for error in form.photo.errors %}
+            {{ form.file }}
+            {% for error in form.file.errors %}
             <span style="color: red;">{{ error }}</span>
             {% endfor %}
             {{ form.submit(class_="btn btn-default") }}
