@@ -47,6 +47,10 @@ from forms import UploadForm
 def home():
     """Renders the home page."""
     form = UploadForm()
+    #debug string
+    templates = Template('{{form.file }}')
+    str_render = templates.render(form = form)
+    #end debug
     return render_template(
         'index.html',
         title='Home Page',
@@ -90,8 +94,8 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in Config.ALLOWED_EXTENSIONS
 
-#@app.route('/upload', methods=['GET', 'POST'])
-@app.route('/upload', methods=['POST'])
+#@app.route('/upload', methods=['POST'])
+@app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     form = UploadForm()
     if request.method == 'POST':
@@ -104,15 +108,9 @@ def upload_file():
             savepath = os.path.join(app.config['UPLOAD_FOLDER'],file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
             return redirect(url_for('uploaded_file', filename=file.filename))
-    return '''
-    <!doctype html>
-    <title>Upload new File</title>
-    <h1>Upload new File</h1>
-    <form action="" method=post enctype=multipart/form-data>
-      <p><input type=file name=file>
-         <input type=submit value=Upload>
-    </form>
-    '''
+        else:
+             flash('file type is not allowed.')
+    return render_template('upload.html', title='uploadfile')
 
 from flask import send_from_directory
 

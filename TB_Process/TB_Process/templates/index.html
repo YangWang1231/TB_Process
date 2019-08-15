@@ -40,11 +40,13 @@
             通过上传一个压缩包，就能够获得testbed的原始分析结果及对应的metrics结果文档、
             GJB8114违背情况确认单.
         </p>
+
+
         <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_file') }}">
             {{ form.hidden_tag() }}
             {{ form.file }}
             {% for error in form.file.errors %}
-            <span style="color: red;">{{ error }}</span>
+                <span style="color: red;">{{ error }}</span>
             {% endfor %}
             {{ form.submit(class_="btn btn-default") }}
         </form>

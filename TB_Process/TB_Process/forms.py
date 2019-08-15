@@ -1,3 +1,5 @@
+ #coding:utf-8
+
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
@@ -31,8 +33,8 @@ class RegistrationForm(FlaskForm):
 
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 class UploadForm(FlaskForm):
-    photo = FileField(validators=[
-        #FileAllowed(['rar', 'zip'], u'Only rar files'), 
-        FileAllowed(['jpg','jpeg','png','gif']) ,
+    file = FileField(validators=[
+        #file allowed 没有起作用，可以上传各种类型的文件，在config.py的ALLOWED_EXTENSIONS字段中的内容才起作用
+        FileAllowed(['rar', 'zip'], u'Only rar files'), 
         FileRequired(u'not choican a file')])
     submit = SubmitField(u'Upload')
