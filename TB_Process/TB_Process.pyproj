@@ -74,6 +74,7 @@
     <Content Include="TB_Process\static\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="TB_Process\static\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="TB_Process\static\js\main.js" />
+    <Content Include="TB_Process\static\js\process_submitform.js" />
     <Content Include="TB_Process\static\scripts\bootstrap.js" />
     <Content Include="TB_Process\static\scripts\bootstrap.min.js" />
     <Content Include="TB_Process\static\scripts\jquery-1.10.2.intellisense.js" />
