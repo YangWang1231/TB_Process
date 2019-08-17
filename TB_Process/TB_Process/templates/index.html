@@ -1,6 +1,32 @@
 ﻿{% extends "layout.html" %}
 
     {% block head %}
+    <!--<script type="text/javascript" src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>-->
+    <script type="text/javascript" src="/static/scripts/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/jquery-form/form@4.2.2/dist/jquery.form.min.js"></script>
+
+<script type="text/javascript">
+    // wait for the DOM to be loaded
+    $(document).ready(function () {
+        // bind 'myForm' and provide a simple callback function
+        //alert("Thank you for your comment!");
+        $('#form1').ajaxForm(function () {
+            alert("Thank you for your comment!");
+        });
+    });
+
+    $(function () {
+        /** 验证文件是否导入成功  */
+        $("#form1").ajaxForm(function (data) {
+            if (data == "1") {
+                alert("提交成功！");
+                $('#submitover').text("提交成功，分析完毕会自动启动下载")
+            };
+        });
+    });
+
+</script>
+
 <!--===============================================================================================-->
 <link rel="icon" type="image/png" href="/static/images/icons/favicon.ico" />
 <!--===============================================================================================-->
@@ -35,31 +61,45 @@
 
 <div class="row">
     <div class="col-md-4">
-        <h2>Getting started</h2>
+        <h2>Source code mode</h2>
         <p>
-            通过上传一个压缩包，就能够获得testbed的原始分析结果及对应的metrics结果文档、
+            通过上传一个被测软件压缩包，就能够获得testbed的原始分析结果及对应的metrics结果文档、
             GJB8114违背情况确认单.
         </p>
 
 
-        <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_file') }}">
-            {{ form.hidden_tag() }}
-            {{ form.file }}
-            {% for error in form.file.errors %}
-                <span style="color: red;">{{ error }}</span>
+        <form id="form1" method="POST" enctype="multipart/form-data" action="{{ url_for('home') }}">
+            {{ form_source.hidden_tag() }}
+            {{ form_source.file }}
+            {% for error in form_source.file.errors %}
+            <span style="color: red;">{{ error }}</span>
             {% endfor %}
-            {{ form.submit(class_="btn btn-default") }}
+            {{ form_source.submit(class_="btn btn-default") }}
         </form>
+        <div>
+            <p id="submitover"></p>
+        </div>
         <!-- <p><a class="btn btn-default" href="http://flask.pocoo.org/docs/">开始使用&raquo;</a></p> -->
     </div>
     <div class="col-md-4">
-        <h2>Learn how to use</h2>
-        <p>The Python Package Index is a repository of software for the Python programming language.</p>
-        <p><a class="btn btn-default" href="https://pypi.python.org/pypi">Learn more &raquo;</a></p>
+        <h2>Document process mode</h2>
+        <p>
+            如果你已经通过其他方式完成了软件的Testbed结果分析，可以通过上传Testbed的System分析
+            结果，从而获得能够用于报告编写的Metrics报告和规则违背情况报告.
+        </p>
+        <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_tb_system') }}">
+            {{ form_tb_system.hidden_tag() }}
+            {{ form_tb_system.file }}
+            {% for error in form_tb_system.file.errors %}
+            <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+            {{ form_tb_system.submit(class_="btn btn-default") }}
+        </form>
+        <!--<p><a class="btn btn-default" href="https://pypi.python.org/pypi">Learn more &raquo;</a></p>-->
     </div>
     <div class="col-md-4">
-        <h2>Microsoft Azure</h2>
-        <p>You can easily publish to Microsoft Azure using Visual Studio. Find out how you can host your application using a free trial today.</p>
+        <h2>User Guid</h2>
+        <p></p>
         <p><a class="btn btn-default" href="http://azure.microsoft.com">Learn more &raquo;</a></p>
     </div>
 </div>

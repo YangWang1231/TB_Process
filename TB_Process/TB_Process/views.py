@@ -42,21 +42,38 @@ def register():
 
 
 from forms import UploadForm
-@app.route('/')
-@app.route('/home')
+#@app.route('/home' , methods=['POST'])
+@app.route('/', methods=['GET', 'POST'])
 def home():
     """Renders the home page."""
-    form = UploadForm()
+    form_source = UploadForm()
+    form_tb_system = UploadForm()
     #debug string
-    templates = Template('{{form.file }}')
-    str_render = templates.render(form = form)
+    #templates = Template('{{form.file }}')
+    #str_render = templates.render(form_source = form_source, form_tb_system = form_tb_system)
     #end debug
-    return render_template(
-        'index.html',
-        title='Home Page',
-        year=datetime.now().year,
-        form = form
-    )
+    
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            #不能处理中文文件名
+            #处理方法见 ’secure_filename 对中文不支持的处理‘
+#            filename = secure_filename(file.filename.encode('utf-8'))
+            #savepath = os.path.join(app.config['UPLOAD_FOLDER'],filename)
+            savepath = os.path.join(app.config['UPLOAD_FOLDER'],file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+            return redirect(url_for('uploaded_file', filename=file.filename))
+        else:
+             flash('file type is not allowed.')
+        return "1"
+    else:
+        return render_template(
+            'index.html',
+            title='Home Page',
+            year=datetime.now().year,
+            form_source = form_source, 
+            form_tb_system = form_tb_system
+        )
 
 @app.route('/contact')
 def contact():
@@ -94,9 +111,10 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in Config.ALLOWED_EXTENSIONS
 
-#@app.route('/upload', methods=['POST'])
-@app.route('/upload', methods=['GET', 'POST'])
-def upload_file():
+#不需要处理get请求，因为给请求已经通过index页面解决了
+#@app.route('/upload', methods=['GET', 'POST'])
+@app.route('/upload_source', methods=['POST'])
+def upload_source_code():
     form = UploadForm()
     if request.method == 'POST':
         file = request.files['file']
@@ -110,7 +128,26 @@ def upload_file():
             return redirect(url_for('uploaded_file', filename=file.filename))
         else:
              flash('file type is not allowed.')
+    return "1"
+    #return render_template('upload.html', title='uploadfile')
+
+@app.route('/upload_tbsystem', methods=['POST'])
+def upload_tb_system():
+    form_tb_system = UploadForm()
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            #不能处理中文文件名
+            #处理方法见 ’secure_filename 对中文不支持的处理‘
+#            filename = secure_filename(file.filename.encode('utf-8'))
+            #savepath = os.path.join(app.config['UPLOAD_FOLDER'],filename)
+            savepath = os.path.join(app.config['UPLOAD_FOLDER'],file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+            return redirect(url_for('uploaded_file', filename=file.filename))
+        else:
+             flash('file type is not allowed.')
     return render_template('upload.html', title='uploadfile')
+
 
 from flask import send_from_directory
 
