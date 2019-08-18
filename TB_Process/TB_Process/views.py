@@ -10,6 +10,7 @@ from flask_login import current_user, login_user
 from flask_login import logout_user
 from TB_Process import app
 from TB_Process.forms import LoginForm
+from TB_Process.forms import UploadForm
 import TB_Process.store_db_sqlit3
 from TB_Process.models import get_User_by_name
 
@@ -41,7 +42,6 @@ def register():
     return "this is register page, to be complete."
 
 
-from forms import UploadForm
 #@app.route('/home' , methods=['POST'])
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -104,7 +104,7 @@ def about():
     )
 
 import os
-from config import Config
+from TB_Process.config import Config
 from werkzeug import secure_filename
 def allowed_file(filename):
     #anotherfilename = filename.encode('utf-8')
