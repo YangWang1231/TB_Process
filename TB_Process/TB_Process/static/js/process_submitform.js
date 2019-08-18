@@ -35,16 +35,18 @@
             //timeout:   3000
         };
 
-        // bind to the form's submit event
-            $('#form1').submit(function() {
-                // inside event callbacks 'this' is the DOM element so we first
-                // wrap it in a jQuery object and then invoke ajaxSubmit
-                $(this).ajaxSubmit(options);
+            $('#form1').ajaxForm(options);
 
-                // !!! Important !!!
-                // always return false to prevent standard browser submit and page navigation
-                return false;
-            });
+        //// bind to the form's submit event
+        //    $('#form1').submit(function() {
+        //        // inside event callbacks 'this' is the DOM element so we first
+        //        // wrap it in a jQuery object and then invoke ajaxSubmit
+        //        $(this).ajaxSubmit(options);
+
+        //        // !!! Important !!!
+        //        // always return false to prevent standard browser submit and page navigation
+        //        return false;
+        //    });
         });
 
 // pre-submit callback
