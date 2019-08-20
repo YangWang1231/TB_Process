@@ -39,3 +39,31 @@ class UploadForm(FlaskForm):
         FileAllowed([u'rar', u'zip'], u'Only rar files'), 
         FileRequired(u'not choican a file')])
     submit = SubmitField(u'Upload')
+
+
+'''
+注册类
+'''
+from models import get_User_by_name
+class RegistrationForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    #email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    password2 = PasswordField(
+        'Repeat Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Register')
+
+    def validate_username(self, username):
+        '''
+        make sure user not existed
+        change to ajax check future
+        '''
+        #user = User.query.filter_by(username=username.data).first()
+        user = get_User_by_name(username.data)
+        if user is not None:
+            raise ValidationError('Please use a different username.')
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user is not None:
+            raise ValidationError('Please use a different email address.')

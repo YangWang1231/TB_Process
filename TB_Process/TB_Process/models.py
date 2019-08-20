@@ -38,9 +38,9 @@ def get_User_by_id(id):
         return None
 
 class User(UserMixin):
-    def __init__(self):
+    def __init__(self, username = ""):
         self.id = 0
-        self.username = ""
+        self.username = username
         self.password_hash = ""
 
     def __repr__(self):
@@ -52,6 +52,12 @@ class User(UserMixin):
     def check_password(self, password):
         #return check_password_hash(self.password_hash, password)
         return True  #fake
+
+    def store_to_db(self):
+        db_path = Config.SQLALCHEMY_DATABASE_URI
+        db_obj = process_db(db_path)
+        db_obj.insert_user((self.username, self.password_hash))
+        db_obj.commit()
 
 
 @login.user_loader

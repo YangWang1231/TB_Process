@@ -10,10 +10,12 @@ from flask_login import current_user, login_user
 from flask_login import logout_user
 from TB_Process import app
 from TB_Process.forms import LoginForm
+from TB_Process.forms import RegistrationForm
 from TB_Process.forms import UploadForm
 import TB_Process.store_db_sqlit3
 from TB_Process.models import get_User_by_name
 
+@app.route('/', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """Renders the login page."""
@@ -30,22 +32,29 @@ def login():
     return render_template('login.html', title='Sign In', form = form)
 
 
-@app.route('/logout')
-def logout():
-    logout_user()
-    return redirect(url_for('index'))
 
-
-@app.route('/register')
+from models import User
+@app.route('/register', methods=['GET', 'POST'])
 def register():
     """Renders the register page."""
-    return "this is register page, to be complete."
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(form.username.data)
+        user.set_password(form.password.data)
+        user.store_to_db()
+        #db.session.add(user)
+        #db.session.commit()
+        flash('Congratulations, you are now a registered user!')
+        return redirect(url_for('login'))
+    return render_template('register.html', title='Register', form=form)
 
 
 from TB_Process.analyse_html.unpack import unzip_file
 
 #@app.route('/home' , methods=['POST'])
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/home', methods=['GET', 'POST'])
 def home():
     """Renders the home page."""
     form_source = UploadForm()
@@ -55,7 +64,6 @@ def home():
     #templates = Template('{{form.file }}')
     #str_render = templates.render(form_source = form_source, form_tb_system = form_tb_system)
     #end debug
-    
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
@@ -65,14 +73,9 @@ def home():
             #savepath = os.path.join(app.config['UPLOAD_FOLDER'],filename)
             savepath = os.path.join(app.config['UPLOAD_FOLDER'],file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
-            src_file = os.path.join(app.config['UPLOAD_FOLDER'], file.filename) 
-            upload = app.config['UPLOAD_FOLDER']
-            dst_file = app.config['EXTRACT_FOLDER']
-            unzip_file(src_file,  dst_file)
+            unzip_file(os.path.join(app.config['UPLOAD_FOLDER'], file.filename) ,  app.config['EXTRACT_FOLDER'])
             return "1"
-            #return redirect(url_for('uploaded_file', filename=file.filename))
         else:
-             #flash('file type is not allowed.')
              return "0"
     else:
         return render_template(
@@ -156,6 +159,11 @@ def upload_tb_system():
              flash('file type is not allowed.')
     return render_template('upload.html', title='uploadfile')
 
+from flask_login import logout_user
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
 from flask import send_from_directory
 

@@ -109,8 +109,8 @@ class process_db(object):
         :param user:
         :return: user id
         """
-        sql = ''' INSERT INTO user(name)
-                  VALUES(?) '''
+        sql = ''' INSERT INTO user(name, password)
+                  VALUES(?,?) '''
         cur = self.db_conn.cursor()
         cur.execute(sql, user)
         return cur.lastrowid
