@@ -35,7 +35,7 @@
                     {% else %}
                     <li><a href="{{ url_for('logout') }}">Logout</a></li>
                     {% endif %}
-</ul>
+                </ul>
                 <ul class="nav navbar-nav wangyang" style="float:right">
                     {% if current_user.username %}
                     <li><a href="{{ url_for('personpage') }}">Hi, {{ current_user.username }}!</a></li>

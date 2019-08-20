@@ -51,7 +51,7 @@ def register():
     return render_template('register.html', title='Register', form=form)
 
 
-from TB_Process.analyse_html.unpack import unzip_file
+from TB_Process.process_upload import process_tb_system
 
 #@app.route('/home' , methods=['POST'])
 @app.route('/home', methods=['GET', 'POST'])
@@ -142,18 +142,20 @@ def upload_source_code():
     return "1"
     #return render_template('upload.html', title='uploadfile')
 
+'''
+process upload floder which contain a testbed system project contents
+'''
+from TB_Process.process_upload import process_tb_system
+
 @app.route('/upload_tbsystem', methods=['POST'])
 def upload_tb_system():
     form_tb_system = UploadForm()
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
-            #不能处理中文文件名
-            #处理方法见 ’secure_filename 对中文不支持的处理‘
-#            filename = secure_filename(file.filename.encode('utf-8'))
-            #savepath = os.path.join(app.config['UPLOAD_FOLDER'],filename)
             savepath = os.path.join(app.config['UPLOAD_FOLDER'],file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+            process_tb_system(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
             return redirect(url_for('uploaded_file', filename=file.filename))
         else:
              flash('file type is not allowed.')
@@ -170,3 +172,10 @@ from flask import send_from_directory
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+from TB_Process.models import get_User_by_id
+from TB_Process import login_manager
+@login_manager.user_loader
+def load_user(user_id):
+    return get_User_by_id(user_id)
+    #return User.get(user_id)

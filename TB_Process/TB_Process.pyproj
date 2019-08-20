@@ -35,7 +35,7 @@
     <Compile Include="TB_Process\analyse_html\make_LDRA_rule_table.py" />
     <Compile Include="TB_Process\analyse_html\store_db_sqlit3.py" />
     <Compile Include="TB_Process\analyse_html\testcode.py" />
-    <Compile Include="TB_Process\analyse_html\unpack.py" />
+    <Compile Include="TB_Process\unpack.py" />
     <Compile Include="TB_Process\analyse_html\__init__.py">
       <SubType>Code</SubType>
     </Compile>
@@ -43,6 +43,9 @@
     <Compile Include="runserver.py" />
     <Compile Include="TB_Process\forms.py" />
     <Compile Include="TB_Process\models.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TB_Process\process_upload.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TB_Process\store_db_sqlit3.py" />

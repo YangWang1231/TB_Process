@@ -12,7 +12,7 @@ from .config import Config
 
 app = Flask(__name__)
 app.config.from_object(Config)
-login = LoginManager(app)
-login.login_view = 'login'
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
 
 import TB_Process.views, TB_Process.models

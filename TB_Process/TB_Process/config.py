@@ -14,3 +14,4 @@ class Config(object):
     EXTRACT_FOLDER = os.getcwd() + r'\TB_Process\extract_floder'    
     ALLOWED_EXTENSIONS = set(['txt', 'rar', 'zip', 'jpg', 'jpeg', 'gif'])
     MAX_CONTENT_LENGTH = 50 * 1024 * 1024 #max upload file : 50M
+    UPLOAD_FILE_EXTENSION = ['.rar', '.zip']
