@@ -6,14 +6,11 @@ Routes and views for the flask application.
 
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request
-from flask_login import current_user, login_user
-from flask_login import logout_user
+from flask_login import current_user, login_user, logout_user
 from TB_Process import app
-from TB_Process.forms import LoginForm
-from TB_Process.forms import RegistrationForm
-from TB_Process.forms import UploadForm
-import TB_Process.store_db_sqlit3
+from TB_Process.forms import LoginForm, RegistrationForm, UploadForm
 from TB_Process.models import get_User_by_name
+import TB_Process.store_db_sqlit3
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])
@@ -44,6 +41,7 @@ def register():
         user = User(form.username.data)
         user.set_password(form.password.data)
         user.store_to_db()
+        #ORM code, use in the future
         #db.session.add(user)
         #db.session.commit()
         flash('Congratulations, you are now a registered user!')
@@ -132,7 +130,7 @@ def upload_source_code():
         if file and allowed_file(file.filename):
             #不能处理中文文件名
             #处理方法见 ’secure_filename 对中文不支持的处理‘
-#            filename = secure_filename(file.filename.encode('utf-8'))
+            #filename = secure_filename(file.filename.encode('utf-8'))
             #savepath = os.path.join(app.config['UPLOAD_FOLDER'],filename)
             savepath = os.path.join(app.config['UPLOAD_FOLDER'],file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
@@ -146,7 +144,6 @@ def upload_source_code():
 process upload floder which contain a testbed system project contents
 '''
 from TB_Process.process_upload import process_tb_system
-
 @app.route('/upload_tbsystem', methods=['POST'])
 def upload_tb_system():
     form_tb_system = UploadForm()
@@ -178,4 +175,5 @@ from TB_Process import login_manager
 @login_manager.user_loader
 def load_user(user_id):
     return get_User_by_id(user_id)
+    #ORM code
     #return User.get(user_id)

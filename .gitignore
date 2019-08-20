@@ -260,3 +260,4 @@ paket-files/
 __pycache__/
 *.pyc
 /TB_Process/TB_Process/extract_floder/flask-dropzone-master/flask-dropzone-master
+/TB_Process/TB_Process/extract_floder/example_tbwrkfls/example_tbwrkfls

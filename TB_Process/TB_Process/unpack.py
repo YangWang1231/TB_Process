@@ -3,8 +3,11 @@ import shutil
 import zipfile
 import rarfile
 from os.path import join, getsize, splitext
+from TB_Process import app
 
-file_extensions = ['.rar', '.zip']
+#file_extensions = ['.rar', '.zip']
+#rarfile.UNRAR_TOOL = unrar_file_path 
+rarfile.UNRAR_TOOL = app.config['UNRAR_FILE_PATH']
 
 def unzip_file(zip_src, dst_dir):
     '''
@@ -14,11 +17,14 @@ def unzip_file(zip_src, dst_dir):
     zip_src = 'somefloder/hello.zip'
     dst_dir = './extract_zip'
     after call unzip_function, will extract hello.zip to './extract_zip/hello/'
+
+    return: dst_dir, the final floder 
     '''
-    unrar_file_path = r'C:\Program Files\WinRAR\Unrar'
+    #unrar_file_path = r'C:\Program Files\WinRAR\Unrar'
 
     filename, ext = splitext(zip_src)
-    if ext not in file_extensions:
+    #if ext not in file_extensions:
+    if ext not in app.config['UPLOAD_FILE_EXTENSION']:
         return None
 
     index = filename.rfind('\\')
@@ -32,11 +38,12 @@ def unzip_file(zip_src, dst_dir):
         with zipfile.ZipFile(zip_src,"r") as fz:
             fz.extractall(dst_dir)
     elif rarfile.is_rarfile(zip_src):
-        rarfile.UNRAR_TOOL = unrar_file_path 
         with rarfile.RarFile(zip_src,'r') as fz:
             fz.extractall(dst_dir)
     else:
-        print("should not happen")
+        return None
+
+    return dst_dir
 
 
 
