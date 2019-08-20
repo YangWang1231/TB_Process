@@ -15,13 +15,14 @@
                 alert("提交成功！");
                 $('#submitover').text("提交成功，分析完毕会自动启动下载")
             };
+
         });
     });
 
         $(document).ready(function() {
             var options = {
            // target: '#output2',   // target element(s) to be updated with server response
-            beforeSubmit:   showRequest,  // pre-submit callback
+           // beforeSubmit:   showRequest,  // pre-submit callback
             success:            showResponse,  // post-submit callback
 
             // other available options:
@@ -71,7 +72,10 @@
             if (responseText == "1") {
                 alert("提交成功！");
                 $('#submitover').text("提交成功，分析完毕会自动启动下载")
-            };
+            }
+            else if (responseText == "0") {
+                alert("文件名后缀不是'.zip'或'.rar‘")
+            }
         // for normal html responses, the first argument to the success callback
         // is the XMLHttpRequest object's responseText property
 

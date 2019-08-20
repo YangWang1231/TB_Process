@@ -42,12 +42,15 @@ def register():
     return "this is register page, to be complete."
 
 
+from TB_Process.analyse_html.unpack import unzip_file
+
 #@app.route('/home' , methods=['POST'])
 @app.route('/', methods=['GET', 'POST'])
 def home():
     """Renders the home page."""
     form_source = UploadForm()
     form_tb_system = UploadForm()
+
     #debug string
     #templates = Template('{{form.file }}')
     #str_render = templates.render(form_source = form_source, form_tb_system = form_tb_system)
@@ -58,14 +61,19 @@ def home():
         if file and allowed_file(file.filename):
             #不能处理中文文件名
             #处理方法见 ’secure_filename 对中文不支持的处理‘
-#            filename = secure_filename(file.filename.encode('utf-8'))
+            #filename = secure_filename(file.filename.encode('utf-8'))
             #savepath = os.path.join(app.config['UPLOAD_FOLDER'],filename)
             savepath = os.path.join(app.config['UPLOAD_FOLDER'],file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
-            return redirect(url_for('uploaded_file', filename=file.filename))
+            src_file = os.path.join(app.config['UPLOAD_FOLDER'], file.filename) 
+            upload = app.config['UPLOAD_FOLDER']
+            dst_file = app.config['EXTRACT_FOLDER']
+            unzip_file(src_file,  dst_file)
+            return "1"
+            #return redirect(url_for('uploaded_file', filename=file.filename))
         else:
-             flash('file type is not allowed.')
-        return "1"
+             #flash('file type is not allowed.')
+             return "0"
     else:
         return render_template(
             'index.html',

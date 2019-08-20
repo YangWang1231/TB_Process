@@ -32,9 +32,10 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Please use a different email address.')
 
 from flask_wtf.file import FileField, FileRequired, FileAllowed
+        #file allowed 没有起作用，可以上传各种类型的文件，在config.py的ALLOWED_EXTENSIONS字段中的内容才起作用
+
 class UploadForm(FlaskForm):
     file = FileField(validators=[
-        #file allowed 没有起作用，可以上传各种类型的文件，在config.py的ALLOWED_EXTENSIONS字段中的内容才起作用
-        FileAllowed(['rar', 'zip'], u'Only rar files'), 
+        FileAllowed([u'rar', u'zip'], u'Only rar files'), 
         FileRequired(u'not choican a file')])
     submit = SubmitField(u'Upload')

@@ -11,5 +11,6 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     #UPLOAD_FOLDER = r'C:\Users\Administrator\source\repos\TB_Process\TB_Process\TB_Process\uploads'
     UPLOAD_FOLDER = os.getcwd() + r'\TB_Process\uploads'
+    EXTRACT_FOLDER = os.getcwd() + r'\TB_Process\extract_floder'    
     ALLOWED_EXTENSIONS = set(['txt', 'rar', 'zip', 'jpg', 'jpeg', 'gif'])
     MAX_CONTENT_LENGTH = 50 * 1024 * 1024 #max upload file : 50M
