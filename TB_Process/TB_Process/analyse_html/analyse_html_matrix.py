@@ -65,8 +65,10 @@ TODO:
 
 
 import re
-from urllib.request import urlopen
-#from    urllib import urlopen
+#python 3.0
+#from urllib.request import urlopen
+#python 2.7
+from    urllib import urlopen
 from    bs4 import BeautifulSoup
 import json
 from config import _config_data
@@ -339,7 +341,7 @@ class process_metrix_repot(object):
     def store_matrix_to_docx(self, docx_obj):
         """根据软件的testbed 度量分析结果，生成doxc文档
         """
-        table_list = document.tables
+        table_list = docx_obj.tables
 
         #should not happen
         if len(table_list) != 1:
@@ -521,6 +523,7 @@ from store_db_sqlit3 import process_db
 from config import _config_data
 from docx import Document
 from docx.shared import Inches
+import os.path
 
 if __name__ == '__main__':
     
@@ -535,7 +538,9 @@ if __name__ == '__main__':
     report.analyse_html(html)
     
     #以模板为基础，生成度量结果文档
-    document = Document(u'质量度量.docx')
+    curpath = os.path.dirname(os.path.abspath(__file__))
+    filepath = os.path.join(curpath, u'质量度量.docx')
+    document = Document(filepath)
     report.store_matrix_to_docx(document)
     #produce doc
     

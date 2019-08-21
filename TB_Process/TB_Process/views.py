@@ -49,7 +49,7 @@ def register():
     return render_template('register.html', title='Register', form=form)
 
 
-from TB_Process.process_upload import process_tb_system
+from TB_Process.process_upload import Process_Html_Report
 
 #@app.route('/home' , methods=['POST'])
 @app.route('/home', methods=['GET', 'POST'])
@@ -143,7 +143,8 @@ def upload_source_code():
 '''
 process upload floder which contain a testbed system project contents
 '''
-from TB_Process.process_upload import process_tb_system
+from TB_Process.process_upload import Process_Html_Report
+
 @app.route('/upload_tbsystem', methods=['POST'])
 def upload_tb_system():
     form_tb_system = UploadForm()
@@ -152,7 +153,9 @@ def upload_tb_system():
         if file and allowed_file(file.filename):
             savepath = os.path.join(app.config['UPLOAD_FOLDER'],file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
-            process_tb_system(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+            processfile = Process_Html_Report()
+            processfile.process_tb_system(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+            
             return redirect(url_for('uploaded_file', filename=file.filename))
         else:
              flash('file type is not allowed.')

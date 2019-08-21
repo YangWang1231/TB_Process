@@ -1,3 +1,5 @@
+ #coding:utf-8
+
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -17,4 +19,5 @@ class Config(object):
     MAX_CONTENT_LENGTH = 50 * 1024 * 1024 #max upload file : 50M
     UPLOAD_FILE_EXTENSION = ['.rar', '.zip']
     UNRAR_FILE_PATH = r'C:\Program Files\WinRAR\Unrar'
-    #unrar_file_path = r'C:\Program Files\WinRAR\Unrar'
+    METRICS_REPORT_PATH =  r'C:\Users\Administrator\source\repos\TB_Process\TB_Process\TB_Process\analyse_html'
+    METRICS_REPORT_TEMPLATE = u'质量度量.docx'

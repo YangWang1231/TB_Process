@@ -1,8 +1,10 @@
 #!/usr/bin/python
  #coding:utf-8
 import re
-#from    urllib import urlopen
-from urllib.request import urlopen
+#python 3 code
+#from urllib.request import urlopen
+#python 2 code
+from    urllib import urlopen
 from    bs4 import BeautifulSoup
 
 
