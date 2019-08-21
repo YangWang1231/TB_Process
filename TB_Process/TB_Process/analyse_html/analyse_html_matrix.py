@@ -338,8 +338,10 @@ class process_metrix_repot(object):
                     x.__dict__ = decode_obj
             return
 
-    def store_matrix_to_docx(self, docx_obj):
+    def store_matrix_to_docx(self, docx_obj, filepath = './demo.docx'):
         """根据软件的testbed 度量分析结果，生成doxc文档
+        docx_obj: document object
+        filepath: path to store file
         """
         table_list = docx_obj.tables
 
@@ -363,7 +365,7 @@ class process_metrix_repot(object):
         for k, v in self.total_info_dict.items():
             v.write_to_table(source_line_table, metrix_table, complexity_fanout_table)
 
-        docx_obj.save('demo.docx')
+        docx_obj.save(filepath)
         return
 
     def store_matrix_to_db(self, db_obj):

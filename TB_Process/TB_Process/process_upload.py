@@ -14,6 +14,8 @@ class Process_Html_Report(object):
     def __init__(self):
         self.metricsfile_path = ""
         self.htmlfile_path = ""
+        self.metrics_result_report = ""
+        
 
     @staticmethod
     def find_metrix_result_file(floder):
@@ -40,6 +42,8 @@ class Process_Html_Report(object):
             finale_floder = os.path.join(floder, dirs[0])
             return Process_Html_Report.find_metrix_result_file(finale_floder)
 
+    def get_metrix_result_path(self):
+        return os.path.basename(self.metrics_result_report)
 
     def process_tb_system(self, system_zip_floder):
         '''
@@ -53,7 +57,6 @@ class Process_Html_Report(object):
         5.zip result files and auto download to user
         5.store results
         ''' 
-
         dst_floder = unzip_file(system_zip_floder ,  app.config['EXTRACT_FOLDER'])
         self.metrix_filename , self.rule_filename = Process_Html_Report.find_metrix_result_file(dst_floder)
 
@@ -64,7 +67,11 @@ class Process_Html_Report(object):
         #以模板为基础，生成度量结果文档
         template_file = os.path.join(app.config['METRICS_REPORT_PATH'],app.config['METRICS_REPORT_TEMPLATE'])
         document = Document(template_file)
-        report.store_matrix_to_docx(document)
+
+        result_file = 'demo.docx'
+        self.metrics_result_report = os.path.join(app.config['RESULT_FOLDER'],result_file)
+
+        report.store_matrix_to_docx(document, self.metrics_result_report)
 
         return 
 
