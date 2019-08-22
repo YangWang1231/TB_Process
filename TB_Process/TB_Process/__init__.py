@@ -18,4 +18,4 @@ login_manager.login_view = 'login'
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-import TB_Process.views, TB_Process.models
+import TB_Process.views, TB_Process.models, TB_Process.module

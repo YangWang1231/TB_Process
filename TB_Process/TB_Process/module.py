@@ -3,12 +3,14 @@ from sqlalchemy import Column, Enum, ForeignKey, Integer, LargeBinary, Table, Te
 from sqlalchemy.sql.sqltypes import NullType
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
+from TB_Process import app
+from TB_Process import db
 
-Base = declarative_base()
-metadata = Base.metadata
+#Base = declarative_base()
+#metadata = Base.metadata
 
 
-class GBJ8114Rule(Base):
+class GBJ8114Rule(db.Model):
     __tablename__ = 'GBJ8114_rule'
 
     id = Column(Integer, primary_key=True)
@@ -18,7 +20,7 @@ class GBJ8114Rule(Base):
     Rule_classification = Column(Enum('RECOMMENDED', 'MANDATORY', ''))
 
 
-class LDRARule(Base):
+class LDRARule(db.Model):
     __tablename__ = 'LDRA_rule'
 
     id = Column(Integer, primary_key=True)
@@ -26,22 +28,24 @@ class LDRARule(Base):
     MandatoryStanard_en = Column(Text, nullable=False)
 
 
-t_sqlite_sequence = Table(
-    'sqlite_sequence', metadata,
-    Column('name', NullType),
-    Column('seq', NullType)
-)
+#t_sqlite_sequence = Table(
+#    'sqlite_sequence', metadata,
+#    Column('name', NullType),
+#    Column('seq', NullType)
+#)
 
 
-class User(Base):
+class User(db.Model):
     __tablename__ = 'user'
 
     id = Column(Integer, primary_key=True)
     name = Column(Text, nullable=False)
     password = Column(Text)
+    def __repr__(self):
+        return '<User {}>'.format(self.username)    
 
 
-class GJBLDRARelationTable(Base):
+class GJBLDRARelationTable(db.Model):
     __tablename__ = 'GJB_LDRA_relation_table'
 
     id = Column(Integer, primary_key=True)
@@ -52,7 +56,7 @@ class GJBLDRARelationTable(Base):
     LDRA = relationship(u'LDRARule')
 
 
-class Project(Base):
+class Project(db.Model):
     __tablename__ = 'projects'
 
     id = Column(Integer, primary_key=True)
@@ -63,7 +67,7 @@ class Project(Base):
     user = relationship(u'User')
 
 
-class RuleObeyInfo(Base):
+class RuleObeyInfo(db.Model):
     __tablename__ = 'rule_obey_info'
 
     id = Column(Integer, primary_key=True)
@@ -76,7 +80,7 @@ class RuleObeyInfo(Base):
     project = relationship(u'Project')
 
 
-class SourceFileInfo(Base):
+class SourceFileInfo(db.Model):
     __tablename__ = 'source_file_info'
 
     id = Column(Integer, primary_key=True)
@@ -90,7 +94,7 @@ class SourceFileInfo(Base):
     project = relationship(u'Project')
 
 
-class ComplextityMetricsInfo(Base):
+class ComplextityMetricsInfo(db.Model):
     __tablename__ = 'complextity_metrics_info'
 
     id = Column(Integer, primary_key=True)
@@ -100,3 +104,6 @@ class ComplextityMetricsInfo(Base):
     fan_out = Column(Integer, nullable=False)
 
     file = relationship(u'SourceFileInfo')
+
+
+
