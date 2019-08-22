@@ -3,7 +3,9 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
-from TB_Process.models import User
+from flask_wtf.file import FileField, FileRequired, FileAllowed
+
+from TB_Process.module import User
 
 
 class LoginForm(FlaskForm):
@@ -31,10 +33,10 @@ class RegistrationForm(FlaskForm):
         if user is not None:
             raise ValidationError('Please use a different email address.')
 
-from flask_wtf.file import FileField, FileRequired, FileAllowed
         #file allowed 没有起作用，可以上传各种类型的文件，在config.py的ALLOWED_EXTENSIONS字段中的内容才起作用
 
 class UploadForm(FlaskForm):
+    project_name = StringField('Projectname', validators=[DataRequired()])
     file = FileField(validators=[
         FileAllowed([u'rar', u'zip'], u'Only rar files'), 
         FileRequired(u'not choican a file')])
@@ -44,7 +46,7 @@ class UploadForm(FlaskForm):
 '''
 注册类
 '''
-from models import get_User_by_name
+#from models import get_User_by_name
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     #email = StringField('Email', validators=[DataRequired(), Email()])
@@ -58,8 +60,8 @@ class RegistrationForm(FlaskForm):
         make sure user not existed
         change to ajax check future
         '''
-        #user = User.query.filter_by(username=username.data).first()
-        user = get_User_by_name(username.data)
+        user = User.query.filter_by(name=username.data).first()
+        #user = get_User_by_name(username.data)
         if user is not None:
             raise ValidationError('Please use a different username.')
 

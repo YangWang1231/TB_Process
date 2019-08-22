@@ -9,8 +9,9 @@ from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user
 from TB_Process import app
 from TB_Process.forms import LoginForm, RegistrationForm, UploadForm
-from TB_Process.models import get_User_by_name
+#from TB_Process.models import get_User_by_name
 import TB_Process.store_db_sqlit3
+from TB_Process.module import User
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])
@@ -20,7 +21,8 @@ def login():
         return redirect(url_for('home'))
     form = LoginForm()
     if form.validate_on_submit():
-        user = get_User_by_name(form.username.data)
+        user = User.query.filter_by(name=form.username.data).first()
+        #user = get_User_by_name(form.username.data)
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
             return redirect(url_for('login'))
@@ -30,7 +32,6 @@ def login():
 
 
 
-from models import User
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     """Renders the register page."""
@@ -38,12 +39,12 @@ def register():
         return redirect(url_for('home'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(form.username.data)
+        user = User(name = form.username.data)
         user.set_password(form.password.data)
-        user.store_to_db()
+        #user.store_to_db()
         #ORM code, use in the future
-        #db.session.add(user)
-        #db.session.commit()
+        db.session.add(user)
+        db.session.commit()
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
@@ -143,8 +144,14 @@ def upload_source_code():
 '''
 process upload floder which contain a testbed system project contents
 '''
+#id = Column(Integer, primary_key=True)
+#    projectname = Column(Text, nullable=False)
+#    userid = Column(ForeignKey(u'user.id'), nullable=False)
+#    projectrowdata = Column(LargeBinary)
+#    user = relationship(u'User')
 from TB_Process.process_upload import Process_Html_Report
-
+from TB_Process.module import User, Project
+from TB_Process import db
 @app.route('/upload_tbsystem', methods=['POST'])
 def upload_tb_system():
     form_tb_system = UploadForm()
@@ -153,11 +160,15 @@ def upload_tb_system():
         if file and allowed_file(file.filename):
             savepath = os.path.join(app.config['UPLOAD_FOLDER'],file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
-            
             #long time process, should be send to another thread
             processfile = Process_Html_Report()
             processfile.process_tb_system(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
             metrix_file = processfile.get_metrix_result_path()
+            userinstance = current_user._get_current_object() 
+            project = Project( projectname = form_tb_system.project_name.data, 
+                                        user = userinstance)
+            db.session.add(project)
+            db.session.commit()
             #待解决：直接调用send_from_directiory函数，下载的文件名称不正确，使用redirect_url方式，下载的文件名称正确。。
             #return send_from_directory(app.config['RESULT_FOLDER'], metrix_file)
             return redirect(url_for('uploaded_file', filename=metrix_file))
@@ -177,10 +188,10 @@ from flask import send_from_directory
 def uploaded_file(filename):
     return send_from_directory(app.config['RESULT_FOLDER'], filename)
 
-from TB_Process.models import get_User_by_id
-from TB_Process import login_manager
-@login_manager.user_loader
-def load_user(user_id):
-    return get_User_by_id(user_id)
+#from TB_Process.models import get_User_by_id
+#from TB_Process import login_manager
+#@login_manager.user_loader
+#def load_user(user_id):
+#    return get_User_by_id(user_id)
     #ORM code
     #return User.get(user_id)

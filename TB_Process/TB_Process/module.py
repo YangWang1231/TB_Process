@@ -3,6 +3,9 @@ from sqlalchemy import Column, Enum, ForeignKey, Integer, LargeBinary, Table, Te
 from sqlalchemy.sql.sqltypes import NullType
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
+from TB_Process import login_manager
 from TB_Process import app
 from TB_Process import db
 
@@ -35,15 +38,28 @@ class LDRARule(db.Model):
 #)
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     __tablename__ = 'user'
 
     id = Column(Integer, primary_key=True)
     name = Column(Text, nullable=False)
-    password = Column(Text)
+    password   = Column(Text)
+    
+    projects = db.relationship('Project', backref='user', lazy='dynamic')
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+
     def __repr__(self):
         return '<User {}>'.format(self.username)    
 
+
+@login_manager.user_loader
+def load_user(id):
+    return User.query.get(int(id))
 
 class GJBLDRARelationTable(db.Model):
     __tablename__ = 'GJB_LDRA_relation_table'
@@ -64,7 +80,7 @@ class Project(db.Model):
     userid = Column(ForeignKey(u'user.id'), nullable=False)
     projectrowdata = Column(LargeBinary)
 
-    user = relationship(u'User')
+    #user = relationship(u'User')
 
 
 class RuleObeyInfo(db.Model):

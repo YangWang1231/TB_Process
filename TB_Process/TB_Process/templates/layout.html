@@ -37,8 +37,8 @@
                     {% endif %}
                 </ul>
                 <ul class="nav navbar-nav wangyang" style="float:right">
-                    {% if current_user.username %}
-                    <li><a href="{{ url_for('personpage') }}">Hi, {{ current_user.username }}!</a></li>
+                    {% if current_user.name %}
+                    <li><a href="{{ url_for('personpage') }}">Hi, {{ current_user.name }}!</a></li>
                     {% endif %}
                 </ul>
             </div>

@@ -133,6 +133,7 @@
 
         <form id="form1" method="POST" enctype="multipart/form-data" action="{{ url_for('home') }}">
             {{ form_source.hidden_tag() }}
+            {{ form_source.project_name}}
             {{ form_source.file }}
             {% for error in form_source.file.errors %}
             <span style="color: red;">{{ error }}</span>
@@ -152,6 +153,7 @@
         </p>
         <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_tb_system') }}">
             {{ form_tb_system.hidden_tag() }}
+            {{ form_tb_system.project_name.label }} {{ form_tb_system.project_name}}
             {{ form_tb_system.file }}
             {% for error in form_tb_system.file.errors %}
             <span style="color: red;">{{ error }}</span>

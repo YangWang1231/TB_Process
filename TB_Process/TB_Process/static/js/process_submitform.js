@@ -37,6 +37,7 @@
         };
 
             $('#form1').ajaxForm(options);
+            $('#form2').ajaxForm(options);
 
         //// bind to the form's submit event
         //    $('#form1').submit(function() {
