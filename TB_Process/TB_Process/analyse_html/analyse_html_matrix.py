@@ -338,6 +338,10 @@ class process_metrix_repot(object):
                     x.__dict__ = decode_obj
             return
 
+    def store_rule_to_docx(self, docx_obj, filepath = './rule.docx'):
+        
+        return
+
     def store_matrix_to_docx(self, docx_obj, filepath = './demo.docx'):
         """根据软件的testbed 度量分析结果，生成doxc文档
         docx_obj: document object

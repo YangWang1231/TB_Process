@@ -35,6 +35,7 @@
     <Compile Include="TB_Process\analyse_html\make_LDRA_rule_table.py" />
     <Compile Include="TB_Process\analyse_html\store_db_sqlit3.py" />
     <Compile Include="TB_Process\analyse_html\testcode.py" />
+    <Compile Include="TB_Process\module.py" />
     <Compile Include="TB_Process\unpack.py" />
     <Compile Include="TB_Process\analyse_html\__init__.py">
       <SubType>Code</SubType>

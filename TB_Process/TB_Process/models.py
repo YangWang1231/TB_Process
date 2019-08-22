@@ -9,9 +9,14 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from TB_Process.config import Config
 from TB_Process.store_db_sqlit3 import process_db
+from TB_Process import db
+
+
+#class User_ORM(db.Model):
+#    __tablename__ = 'user'
 
 def get_User_by_name(username):
-    db_path = Config.SQLALCHEMY_DATABASE_URI
+    db_path = Config.SQL_DATABASE_URI
     db_obj = process_db(db_path)
     id, name, password = db_obj.get_user_by_name(username)
     if id is not -1:
@@ -25,7 +30,7 @@ def get_User_by_name(username):
 
 
 def get_User_by_id(id):
-    db_path = Config.SQLALCHEMY_DATABASE_URI
+    db_path = Config.SQL_DATABASE_URI
     db_obj = process_db(db_path)
     id, name, password = db_obj.get_user_by_id(int(id))
     if id is not -1:
@@ -57,7 +62,7 @@ class User(UserMixin):
         return unicode(self.id)
 
     def store_to_db(self):
-        db_path = Config.SQLALCHEMY_DATABASE_URI
+        db_path = Config.SQL_DATABASE_URI
         db_obj = process_db(db_path)
         db_obj.insert_user((self.username, self.password_hash))
         db_obj.commit()
@@ -66,3 +71,4 @@ class User(UserMixin):
 @login_manager.user_loader
 def load_user(id):
     return get_User_by_id(id)
+
