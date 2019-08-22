@@ -153,6 +153,7 @@
     <Content Include="TB_Process\templates\index.html" />
     <Content Include="TB_Process\templates\layout.html" />
     <Content Include="TB_Process\templates\login.html" />
+    <Content Include="TB_Process\templates\personalpage.html" />
     <Content Include="TB_Process\templates\register.html" />
     <Content Include="TB_Process\templates\upload.html" />
   </ItemGroup>

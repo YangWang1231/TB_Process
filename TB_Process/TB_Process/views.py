@@ -11,7 +11,7 @@ from TB_Process import app
 from TB_Process.forms import LoginForm, RegistrationForm, UploadForm
 #from TB_Process.models import get_User_by_name
 import TB_Process.store_db_sqlit3
-from TB_Process.module import User
+from TB_Process.module import User, Project
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])
@@ -187,6 +187,15 @@ from flask import send_from_directory
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['RESULT_FOLDER'], filename)
+
+@app.route('/personalpage/<username>')
+def personalpage(username):
+    user = current_user._get_current_object()
+    projects = Project.query.filter_by(user = user).first()
+    if projects is None:
+        return render_template('personalpage.html', name = 'you have no projects currently')
+    
+    return render_template('personalpage.html', name = projects.projectname)
 
 #from TB_Process.models import get_User_by_id
 #from TB_Process import login_manager

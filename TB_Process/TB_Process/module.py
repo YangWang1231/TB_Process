@@ -57,9 +57,7 @@ class User(UserMixin, db.Model):
         return '<User {}>'.format(self.username)    
 
 
-@login_manager.user_loader
-def load_user(id):
-    return User.query.get(int(id))
+
 
 class GJBLDRARelationTable(db.Model):
     __tablename__ = 'GJB_LDRA_relation_table'
@@ -123,3 +121,6 @@ class ComplextityMetricsInfo(db.Model):
 
 
 
+@login_manager.user_loader
+def load_user(id):
+    return User.query.get(int(id))
