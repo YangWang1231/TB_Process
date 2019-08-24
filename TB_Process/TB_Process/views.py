@@ -41,6 +41,7 @@ def register():
     if form.validate_on_submit():
         user = User(name = form.username.data)
         user.set_password(form.password.data)
+        #user.filepath = createUserPath(user)
         #user.store_to_db()
         #ORM code, use in the future
         db.session.add(user)
