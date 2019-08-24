@@ -122,7 +122,7 @@ iframe {
 }
 
 .wrap-table100 {
-  width: 1170px;
+  width: 1100px;
 }
 
 table {
@@ -192,7 +192,7 @@ tbody tr:hover {
 }
 
 .column1 {
-  width: 260px;
+  width: 240px;
   padding-left: 40px;
 }
 
@@ -205,13 +205,14 @@ tbody tr:hover {
 }
 
 .column4 {
-  width: 110px;
-  text-align: right;
+    width: 150px;
+    /*text-align: right;*/
 }
 
 .column5 {
-  width: 170px;
-  text-align: right;
+    width: 170px;
+    text-align: right;
+    padding-right: 62px;
 }
 
 .column6 {
