@@ -195,7 +195,8 @@ def personalpage(username):
     if projects is None:
         return render_template('personalpage.html', name = 'you have no projects currently')
     
-    return render_template('personalpage.html', name = projects.projectname)
+    return render_template('project_info.html')
+    #return render_template('personalpage.html', name = projects.projectname)
 
 #from TB_Process.models import get_User_by_id
 #from TB_Process import login_manager
