@@ -17,5 +17,9 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+# Set the secret key to some random bytes. Keep this really secret!
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+
+
 
 import TB_Process.views, TB_Process.models, TB_Process.module

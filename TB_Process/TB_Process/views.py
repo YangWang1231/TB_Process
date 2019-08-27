@@ -3,15 +3,24 @@
 """
 Routes and views for the flask application.
 """
-
+import os
 from datetime import datetime
+from jinja2 import Template
 from flask import render_template, flash, redirect, url_for, request
+from flask import send_from_directory
 from flask_login import current_user, login_user, logout_user
 from TB_Process import app
 from TB_Process.forms import LoginForm, RegistrationForm, UploadForm
 #from TB_Process.models import get_User_by_name
 import TB_Process.store_db_sqlit3
 from TB_Process.module import User, Project
+from TB_Process.process_upload import Process_Html_Report
+from TB_Process.config import Config
+from werkzeug import secure_filename
+from TB_Process.process_upload import Process_Html_Report
+from TB_Process import db
+from TB_Process.module import path_struct
+from TB_Process.global_context import set_path, get_path
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])
@@ -27,9 +36,11 @@ def login():
             flash('Invalid username or password')
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
+        #make user dir, should be done when user register
+        User.make_user_base_dir(user.name)
+
         return redirect(url_for('home'))
     return render_template('login.html', title='Sign In', form = form)
-
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -47,11 +58,12 @@ def register():
         db.session.add(user)
         db.session.commit()
         flash('Congratulations, you are now a registered user!')
+        #make user dir, should be done when user register
+        User.make_user_base_dir(user.name)
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
 
-from TB_Process.process_upload import Process_Html_Report
 
 #@app.route('/home' , methods=['POST'])
 @app.route('/home', methods=['GET', 'POST'])
@@ -96,7 +108,6 @@ def contact():
         message='Your contact page.'
     )
 
-from jinja2 import Template
 @app.route('/personpage')
 def personpage():
     """Renders the contact page."""
@@ -114,9 +125,7 @@ def about():
         message='Your application description page.'
     )
 
-import os
-from TB_Process.config import Config
-from werkzeug import secure_filename
+
 def allowed_file(filename):
     #anotherfilename = filename.encode('utf-8')
     return '.' in filename and \
@@ -142,34 +151,36 @@ def upload_source_code():
     return "1"
     #return render_template('upload.html', title='uploadfile')
 
+from flask import session
 '''
 process upload floder which contain a testbed system project contents
 '''
-#id = Column(Integer, primary_key=True)
-#    projectname = Column(Text, nullable=False)
-#    userid = Column(ForeignKey(u'user.id'), nullable=False)
-#    projectrowdata = Column(LargeBinary)
-#    user = relationship(u'User')
-from TB_Process.process_upload import Process_Html_Report
-from TB_Process.module import User, Project
-from TB_Process import db
 @app.route('/upload_tbsystem', methods=['POST'])
 def upload_tb_system():
     form_tb_system = UploadForm()
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
-            savepath = os.path.join(app.config['UPLOAD_FOLDER'],file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+            #save file to USER_DATA_PATH/user/temp_upload
+            userinstance = current_user._get_current_object() 
+            path = path_struct(userinstance.name, form_tb_system.project_name.data)
+            #session中只能保存dictionary对象，因为session会保存在client端，所以需要jison类型才能发送
+            #或者，写一个path类的jison化、反jison化函数也可以
+            session['current_project_name'] = form_tb_system.project_name.data
+            session['current_user'] = userinstance.name
+            User.make_project_floder(userinstance.name, form_tb_system.project_name.data)
+            file.save(os.path.join(path.projcet_upload, file.filename))
+            
             #long time process, should be send to another thread
             processfile = Process_Html_Report()
-            processfile.process_tb_system(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+            processfile.process_tb_system(os.path.join(path.projcet_upload, file.filename), path) 
+
             metrix_file = processfile.get_metrix_result_path()
-            userinstance = current_user._get_current_object() 
             project = Project( projectname = form_tb_system.project_name.data, 
                                         user = userinstance)
             db.session.add(project)
             db.session.commit()
+            
             #待解决：直接调用send_from_directiory函数，下载的文件名称不正确，使用redirect_url方式，下载的文件名称正确。。
             #return send_from_directory(app.config['RESULT_FOLDER'], metrix_file)
             return redirect(url_for('uploaded_file', filename=metrix_file))
@@ -183,11 +194,11 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
-from flask import send_from_directory
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
-    return send_from_directory(app.config['RESULT_FOLDER'], filename)
+    path = path_struct(session['current_user'] , session['current_project_name'] )
+    return send_from_directory(path.project_result, filename)
 
 @app.route('/personalpage/<username>')
 def personalpage(username):

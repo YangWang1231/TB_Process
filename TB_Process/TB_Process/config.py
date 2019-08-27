@@ -11,6 +11,7 @@ class Config(object):
     SQL_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         os.path.join(basedir, 'flaskr.sqlite')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    USER_DATA_PATH = os.getcwd() + r'\TB_Process\User_Data'
     UPLOAD_FOLDER = os.getcwd() + r'\TB_Process\uploads'
     EXTRACT_FOLDER = os.getcwd() + r'\TB_Process\extract_floder'    
     RESULT_FOLDER = os.getcwd() + r'\TB_Process\result_floder'    

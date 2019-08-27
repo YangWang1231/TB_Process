@@ -8,6 +8,7 @@ from flask_login import UserMixin
 from TB_Process import login_manager
 from TB_Process import app
 from TB_Process import db
+import os
 
 #Base = declarative_base()
 #metadata = Base.metadata
@@ -36,6 +37,18 @@ class LDRARule(db.Model):
 #    Column('name', NullType),
 #    Column('seq', NullType)
 #)
+class path_struct(object):
+    def __init__(self, username = '', projectname = ''):
+         if username is not '':
+            self.base_path = os.path.join(app.config['USER_DATA_PATH'], username)
+            self.temp_upload = os.path.join(self.base_path , 'temp_upload') #考虑删除该文件夹，直接将上传文件放入project/upload文件夹下
+            self.extract = os.path.join(self.base_path,  'extracrt')
+            if projectname is not '':
+                self.projcet_floder = os.path.join(self.base_path, projectname)
+                self.projcet_upload = os.path.join(self.projcet_floder, 'upload')
+                self.project_result = os.path.join(self.projcet_floder,'result')
+    
+
 
 
 class User(UserMixin, db.Model):
@@ -56,8 +69,25 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return '<User {}>'.format(self.username)    
 
+    #make the basic floder structure for one user.  this should be one time operation
+    @staticmethod
+    def make_user_base_dir(username):
+        path = path_struct(username)
+        if not os.path.exists(path.base_path):
+            os.mkdir(path.base_path)
+            os.mkdir(path.temp_upload)
+            os.mkdir(path.extract)
+        return
 
-
+    #make the projct floder structure, this operation will execute each project uploads
+    @staticmethod
+    def make_project_floder(username, projectname):
+        path = path_struct(username, projectname)
+        if not os.path.exists(path.projcet_floder):
+            os.mkdir(path.projcet_floder)
+            os.mkdir(path.projcet_upload)
+            os.mkdir(path.project_result)
+        return 
 
 class GJBLDRARelationTable(db.Model):
     __tablename__ = 'GJB_LDRA_relation_table'
