@@ -89,6 +89,7 @@
     <Content Include="TB_Process\static\content\bootstrap.css" />
     <Content Include="TB_Process\static\content\bootstrap.min.css" />
     <Content Include="TB_Process\static\content\site.css" />
+    <Content Include="TB_Process\static\css\main-personal-page.css" />
     <Content Include="TB_Process\static\css\main.css" />
     <Content Include="TB_Process\static\css\util.css" />
     <Content Include="TB_Process\static\fonts\glyphicons-halflings-regular.eot" />
@@ -163,6 +164,15 @@
       <Id>env-thinkpad</Id>
       <Version>3.7</Version>
       <Description>env-thinkpad (Python 3.7 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
+    <Interpreter Include="env2.7\">
+      <Id>env2.7</Id>
+      <Version>2.7</Version>
+      <Description>env2.7 (Python 2.7 (64-bit))</Description>
       <InterpreterPath>Scripts\python.exe</InterpreterPath>
       <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
       <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
