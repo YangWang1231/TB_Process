@@ -1,5 +1,5 @@
 # coding: utf-8
-from sqlalchemy import Column, Enum, ForeignKey, Integer, LargeBinary, Table, Text
+from sqlalchemy import Column, Enum, ForeignKey, Integer, LargeBinary, Table, Text, text
 from sqlalchemy.sql.sqltypes import NullType
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
@@ -107,6 +107,7 @@ class Project(db.Model):
     projectname = Column(Text, nullable=False)
     userid = Column(ForeignKey(u'user.id'), nullable=False)
     projectrowdata = Column(LargeBinary)
+    processresult = Column(Text, server_default=text("'NOTSTART'"))
 
     #user = relationship(u'User')
 

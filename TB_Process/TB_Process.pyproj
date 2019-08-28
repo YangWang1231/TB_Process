@@ -42,6 +42,9 @@
     <Compile Include="TB_Process\test.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TB_Process\test_thread.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="TB_Process\unpack.py" />
     <Compile Include="TB_Process\analyse_html\__init__.py">
       <SubType>Code</SubType>

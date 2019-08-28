@@ -21,6 +21,7 @@ from TB_Process.process_upload import Process_Html_Report
 from TB_Process import db
 from TB_Process.module import path_struct
 from TB_Process.global_context import set_path, get_path
+from TB_Process.unpack import unzip_file
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])
@@ -64,6 +65,9 @@ def register():
     return render_template('register.html', title='Register', form=form)
 
 
+from thread import start_new_thread
+import time
+from TB_Process.test_thread import call_fun
 
 #@app.route('/home' , methods=['POST'])
 @app.route('/home', methods=['GET', 'POST'])
@@ -86,6 +90,8 @@ def home():
             savepath = os.path.join(app.config['UPLOAD_FOLDER'],file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
             unzip_file(os.path.join(app.config['UPLOAD_FOLDER'], file.filename) ,  app.config['EXTRACT_FOLDER'])
+            #debug code: test the lifecycle of the flask thread. it seems that one server run, then keeps a thread, not quite, so the sub thread runs forever.
+            #call_fun()
             return "1"
         else:
              return "0"
@@ -151,6 +157,18 @@ def upload_source_code():
     return "1"
     #return render_template('upload.html', title='uploadfile')
 
+
+def process_tb_system_fun(path):
+    processfile = Process_Html_Report()
+    processfile.process_tb_system(path) 
+
+    metrix_file = processfile.get_metrix_result_path()
+    project = Project( projectname = form_tb_system.project_name.data, 
+                                user = userinstance)
+    db.session.add(project)
+    db.session.commit()
+    return 
+
 from flask import session
 '''
 process upload floder which contain a testbed system project contents
@@ -209,11 +227,3 @@ def personalpage(username):
     
     return render_template('project_info.html')
     #return render_template('personalpage.html', name = projects.projectname)
-
-#from TB_Process.models import get_User_by_id
-#from TB_Process import login_manager
-#@login_manager.user_loader
-#def load_user(user_id):
-#    return get_User_by_id(user_id)
-    #ORM code
-    #return User.get(user_id)
