@@ -158,16 +158,23 @@ def upload_source_code():
     #return render_template('upload.html', title='uploadfile')
 
 
-def process_tb_system_fun(path):
+import thread
+def process_tb_system_fun(system_zip_floder, path, project_obj):
     processfile = Process_Html_Report()
-    processfile.process_tb_system(path) 
-
+    processfile.process_tb_system(system_zip_floder, path) 
     metrix_file = processfile.get_metrix_result_path()
-    project = Project( projectname = form_tb_system.project_name.data, 
-                                user = userinstance)
-    db.session.add(project)
+    project_obj.processresult = 'Finished'
+    #在没有appcontext、requestcontext的情况下，只能使用数据库来保存状态
+    #session和appcontext都不能再使用
+    #url_for也不能使用
+    db.session.add(project_obj)
     db.session.commit()
     return 
+    #没有appcontext，不能使用redirect
+    #with app.app_context():
+    #    return redirect(url_for('uploaded_file', filename=metrix_file))
+
+
 
 from flask import session
 '''
@@ -188,9 +195,16 @@ def upload_tb_system():
             session['current_user'] = userinstance.name
             User.make_project_floder(userinstance.name, form_tb_system.project_name.data)
             file.save(os.path.join(path.projcet_upload, file.filename))
-            
+            #先建立工程的DB条目，并且project的初始状态为Processing
+            project = Project( projectname = form_tb_system.project_name.data, 
+                                user = userinstance, processresult = 'Processing')
+            db.session.add(project)
+            db.session.commit()
+            thread.start_new_thread( process_tb_system_fun, (os.path.join(path.projcet_upload, file.filename), path, project, ) )
+
             return "1"
-            
+            #comment block
+            #extract to function
             #long time process, should be send to another thread
             #processfile = Process_Html_Report()
             #processfile.process_tb_system(os.path.join(path.projcet_upload, file.filename), path) 
@@ -200,10 +214,14 @@ def upload_tb_system():
             #                            user = userinstance)
             #db.session.add(project)
             #db.session.commit()
+            #end: extract to function
             
+
             ##待解决：直接调用send_from_directiory函数，下载的文件名称不正确，使用redirect_url方式，下载的文件名称正确。。
             ##return send_from_directory(app.config['RESULT_FOLDER'], metrix_file)
             #return redirect(url_for('uploaded_file', filename=metrix_file))
+            #end comment block
+
         else:
              flash('file type is not allowed.')
     return render_template('upload.html', title='uploadfile')
