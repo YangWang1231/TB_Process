@@ -189,19 +189,21 @@ def upload_tb_system():
             User.make_project_floder(userinstance.name, form_tb_system.project_name.data)
             file.save(os.path.join(path.projcet_upload, file.filename))
             
-            #long time process, should be send to another thread
-            processfile = Process_Html_Report()
-            processfile.process_tb_system(os.path.join(path.projcet_upload, file.filename), path) 
-
-            metrix_file = processfile.get_metrix_result_path()
-            project = Project( projectname = form_tb_system.project_name.data, 
-                                        user = userinstance)
-            db.session.add(project)
-            db.session.commit()
+            return "1"
             
-            #待解决：直接调用send_from_directiory函数，下载的文件名称不正确，使用redirect_url方式，下载的文件名称正确。。
-            #return send_from_directory(app.config['RESULT_FOLDER'], metrix_file)
-            return redirect(url_for('uploaded_file', filename=metrix_file))
+            #long time process, should be send to another thread
+            #processfile = Process_Html_Report()
+            #processfile.process_tb_system(os.path.join(path.projcet_upload, file.filename), path) 
+
+            #metrix_file = processfile.get_metrix_result_path()
+            #project = Project( projectname = form_tb_system.project_name.data, 
+            #                            user = userinstance)
+            #db.session.add(project)
+            #db.session.commit()
+            
+            ##待解决：直接调用send_from_directiory函数，下载的文件名称不正确，使用redirect_url方式，下载的文件名称正确。。
+            ##return send_from_directory(app.config['RESULT_FOLDER'], metrix_file)
+            #return redirect(url_for('uploaded_file', filename=metrix_file))
         else:
              flash('file type is not allowed.')
     return render_template('upload.html', title='uploadfile')

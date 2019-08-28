@@ -151,7 +151,7 @@
             如果你已经通过其他方式完成了软件的Testbed结果分析，可以通过上传Testbed的System分析
             结果，从而获得能够用于报告编写的Metrics报告和规则违背情况报告.
         </p>
-        <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_tb_system') }}">
+        <form id="form2" method="POST" enctype="multipart/form-data" action="{{ url_for('upload_tb_system') }}">
             {{ form_tb_system.hidden_tag() }}
             {{ form_tb_system.project_name.label }} {{ form_tb_system.project_name}}
             {{ form_tb_system.file }}
