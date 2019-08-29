@@ -35,12 +35,13 @@ function cyc_retrive_projects_status() {
                     //if (response == "Processing")
                     //    alert("project is processing.");
                     //else
-                    if (response == "Finished") {
+                    if (response.status == "Finished") {
                         clearInterval(timerID)
                         alert("project is finished. you can find it in the personal page")
+                        $.post("/uploads", { "metrics_filename": response.filename } )
                     }
                 },
-                "text"
+                "json"
         );
     }
     , 500 );

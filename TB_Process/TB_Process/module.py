@@ -108,6 +108,7 @@ class Project(db.Model):
     userid = Column(ForeignKey(u'user.id'), nullable=False)
     projectrowdata = Column(LargeBinary)
     processresult = Column(Text, server_default=text("'NOTSTART'"))
+    date = Column(Text)
 
     #user = relationship(u'User')
 

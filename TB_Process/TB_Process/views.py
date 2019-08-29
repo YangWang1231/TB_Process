@@ -21,6 +21,7 @@ from TB_Process import db
 from TB_Process.module import path_struct
 from TB_Process.global_context import set_path, get_path
 from TB_Process.unpack import unzip_file
+import json
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])
@@ -182,10 +183,19 @@ type: string
 def get_project_status():
     prj_name=request.args.get('projectname')
     prj_obj = Project.query.filter_by(projectname = prj_name).first()
+    
+    dic = {"status":"", "filename":""}
     if not prj_obj:
-        return "None"
+        dic['status'] = "None" #should not happen
+    elif prj_obj.processresult == "Finished":
+        dic['status'] = prj_obj.processresult
+        dic["filename"] = "demo.docx"
+    else:
+        dic['status'] = prj_obj.processresult
 
-    return prj_obj.processresult 
+    return json.dumps(dic)
+
+    
     #debug
     if 'access_count' not in session:
         session['access_count'] = 1
@@ -217,30 +227,31 @@ def upload_tb_system():
             file.save(os.path.join(path.projcet_upload, file.filename))
             #先建立工程的DB条目，并且project的初始状态为Processing
             project = Project( projectname = form_tb_system.project_name.data, 
-                                user = userinstance, processresult = 'Processing')
+                                user = userinstance, processresult = 'Processing', date = datetime.now())
             db.session.add(project)
             db.session.commit()
-            #Project.query.
-            thread.start_new_thread( process_tb_system_fun, (os.path.join(path.projcet_upload, file.filename), path, project, ) )
+            
+            ##mutile thread
+            #thread.start_new_thread( process_tb_system_fun, (os.path.join(path.projcet_upload, file.filename), path, project, ) )
+            #return "1"
 
-            return "1"
+            #sequence execute
             #comment block
             #extract to function
             #long time process, should be send to another thread
-            #processfile = Process_Html_Report()
-            #processfile.process_tb_system(os.path.join(path.projcet_upload, file.filename), path) 
+            processfile = Process_Html_Report()
+            processfile.process_tb_system(os.path.join(path.projcet_upload, file.filename), path) 
 
-            #metrix_file = processfile.get_metrix_result_path()
-            #project = Project( projectname = form_tb_system.project_name.data, 
-            #                            user = userinstance)
-            #db.session.add(project)
-            #db.session.commit()
+            metrix_file = processfile.get_metrix_result_path()
+            project = Project( projectname = form_tb_system.project_name.data, 
+                                        user = userinstance)
+            db.session.add(project)
+            db.session.commit()
             #end: extract to function
-            
 
+            return redirect(url_for('uploaded_file', filename=metrix_file))
             ##待解决：直接调用send_from_directiory函数，下载的文件名称不正确，使用redirect_url方式，下载的文件名称正确。。
             ##return send_from_directory(app.config['RESULT_FOLDER'], metrix_file)
-            #return redirect(url_for('uploaded_file', filename=metrix_file))
             #end comment block
 
         else:
@@ -254,10 +265,29 @@ def logout():
     return redirect(url_for('login'))
 
 
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
+#@app.route('/uploads/<filename>')
+#def uploaded_file(filename):
+#    path = path_struct(session['current_user'] , session['current_project_name'] )
+#    return send_from_directory(path.project_result, filename)
+
+@app.route('/uploads')
+def uploaded_file():
+    filename=request.args.get('metrics_filename')
     path = path_struct(session['current_user'] , session['current_project_name'] )
     return send_from_directory(path.project_result, filename)
+
+
+
+def generate_table_value():
+    items = []
+    for i in range(1, 11):
+        i = str(i)
+        # you just don't have to quote the keys
+        dict == {}
+        an_item = dict(date="2012-02-" + i, projectname="testproject", floder ="here", value ="waiting")
+        items.append(an_item)
+
+    return items
 
 @app.route('/personalpage/<username>')
 def personalpage(username):
@@ -266,5 +296,6 @@ def personalpage(username):
     if projects is None:
         return render_template('personalpage.html', name = 'you have no projects currently')
     
-    return render_template('project_info.html')
+    items = generate_table_value()
+    return render_template('project_info.html', items = items)
     #return render_template('personalpage.html', name = projects.projectname)

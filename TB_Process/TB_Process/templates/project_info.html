@@ -35,54 +35,62 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {% for item in items %}
                         <tr>
+                            <td class="column1">{{item.date}}</td>
+                            <td class="column2">{{item.projectname}}</td>
+                            <td class="column3">{{item.floder}}</td>
+                            <td class="column4">{{item.value}}</td>
+                        </tr>
+                        {%endfor%}
+                          <!-- <tr>
                             <td class="column1">2017-09-29 01:22</td>
                             <td class="column2">200398</td>
                             <td class="column3">iPhone X 64Gb Grey</td>
                             <td class="column4">$999.00</td>
-                        </tr>
-                        <tr>
-                            <td class="column1">2017-09-28 05:57</td>
-                            <td class="column2">200397</td>
-                            <td class="column3">Samsung S8 Black</td>
-                            <td class="column4">$756.00</td>
-                        </tr>
-                        <tr>
-                            <td class="column1">2017-09-26 05:57</td>
-                            <td class="column2">200396</td>
-                            <td class="column3">Game Console Controller</td>
-                            <td class="column4">$22.00</td>
-                        </tr>
-                        <tr>
-                            <td class="column1">2017-09-25 23:06</td>
-                            <td class="column2">200392</td>
-                            <td class="column3">USB 3.0 Cable</td>
-                            <td class="column4">$10.00</td>
-                        </tr>
-                        <tr>
-                            <td class="column1">2017-09-24 05:57</td>
-                            <td class="column2">200391</td>
-                            <td class="column3">Smartwatch 4.0 LTE Wifi</td>
-                            <td class="column4">$199.00</td>
-                        </tr>
-                        <tr>
-                            <td class="column1">2017-09-23 05:57</td>
-                            <td class="column2">200390</td>
-                            <td class="column3">Camera C430W 4k</td>
-                            <td class="column4">$699.00</td>
-                        </tr>
-                        <tr>
-                            <td class="column1">2017-09-22 05:57</td>
-                            <td class="column2">200389</td>
-                            <td class="column3">Macbook Pro Retina 2017</td>
-                            <td class="column4">$2199.00</td>
-                        </tr>
-                        <tr>
-                            <td class="column1">2017-09-21 05:57</td>
-                            <td class="column2">200388</td>
-                            <td class="column3">Game Console Controller</td>
-                            <td class="column4">$999.00</td>
-                        </tr>
+                         </tr>
+                         <tr>
+                             <td class="column1">2017-09-28 05:57</td>
+                             <td class="column2">200397</td>
+                             <td class="column3">Samsung S8 Black</td>
+                             <td class="column4">$756.00</td>
+                         </tr>
+                         <tr>
+                             <td class="column1">2017-09-26 05:57</td>
+                             <td class="column2">200396</td>
+                             <td class="column3">Game Console Controller</td>
+                             <td class="column4">$22.00</td>
+                         </tr>
+                         <tr>
+                             <td class="column1">2017-09-25 23:06</td>
+                             <td class="column2">200392</td>
+                             <td class="column3">USB 3.0 Cable</td>
+                             <td class="column4">$10.00</td>
+                         </tr>
+                         <tr>
+                             <td class="column1">2017-09-24 05:57</td>
+                             <td class="column2">200391</td>
+                             <td class="column3">Smartwatch 4.0 LTE Wifi</td>
+                             <td class="column4">$199.00</td>
+                         </tr>
+                         <tr>
+                             <td class="column1">2017-09-23 05:57</td>
+                             <td class="column2">200390</td>
+                             <td class="column3">Camera C430W 4k</td>
+                             <td class="column4">$699.00</td>
+                         </tr>
+                         <tr>
+                             <td class="column1">2017-09-22 05:57</td>
+                             <td class="column2">200389</td>
+                             <td class="column3">Macbook Pro Retina 2017</td>
+                             <td class="column4">$2199.00</td>
+                         </tr>
+                         <tr>
+                             <td class="column1">2017-09-21 05:57</td>
+                             <td class="column2">200388</td>
+                             <td class="column3">Game Console Controller</td>
+                             <td class="column4">$999.00</td>
+                         </tr>-->
 
 
                     </tbody>
