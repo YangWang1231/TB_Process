@@ -16,8 +16,8 @@ $(document).ready(function () {
         //timeout:   3000
     };
 
-    $('#form1').ajaxForm(options);
-    $('#form2').ajaxForm(options);
+        $('#form1').ajaxForm(options);
+        $('#form2').ajaxForm(options);
 });
 
 //make a global var which can be accessed by all function in this scope
@@ -38,7 +38,7 @@ function cyc_retrive_projects_status() {
                     if (response.status == "Finished") {
                         clearInterval(timerID)
                         alert("project is finished. you can find it in the personal page")
-                        $.post("/uploads", { "metrics_filename": response.filename } )
+                        $.get("/uploads", { "metrics_filename": response.filename } )
                     }
                 },
                 "json"
@@ -63,4 +63,5 @@ function showResponse(responseText, statusText) {
     else if (responseText == "0") {
         alert("文件名后缀不是'.zip'或'.rar‘")
     }
+    return true
 }

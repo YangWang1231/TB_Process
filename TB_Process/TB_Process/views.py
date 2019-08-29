@@ -231,28 +231,28 @@ def upload_tb_system():
             db.session.add(project)
             db.session.commit()
             
-            ##mutile thread
-            #thread.start_new_thread( process_tb_system_fun, (os.path.join(path.projcet_upload, file.filename), path, project, ) )
-            #return "1"
+            #mutile thread
+            thread.start_new_thread( process_tb_system_fun, (os.path.join(path.projcet_upload, file.filename), path, project, ) )
+            return "1"
 
-            #sequence execute
-            #comment block
-            #extract to function
-            #long time process, should be send to another thread
-            processfile = Process_Html_Report()
-            processfile.process_tb_system(os.path.join(path.projcet_upload, file.filename), path) 
+            ##sequence execute
+            ##comment block
+            ##extract to function
+            ##long time process, should be send to another thread
+            #processfile = Process_Html_Report()
+            #processfile.process_tb_system(os.path.join(path.projcet_upload, file.filename), path) 
 
-            metrix_file = processfile.get_metrix_result_path()
-            project = Project( projectname = form_tb_system.project_name.data, 
-                                        user = userinstance)
-            db.session.add(project)
-            db.session.commit()
-            #end: extract to function
+            #metrix_file = processfile.get_metrix_result_path()
+            #project = Project( projectname = form_tb_system.project_name.data, 
+            #                            user = userinstance)
+            #db.session.add(project)
+            #db.session.commit()
+            ##end: extract to function
 
-            return redirect(url_for('uploaded_file', filename=metrix_file))
-            ##待解决：直接调用send_from_directiory函数，下载的文件名称不正确，使用redirect_url方式，下载的文件名称正确。。
-            ##return send_from_directory(app.config['RESULT_FOLDER'], metrix_file)
-            #end comment block
+            #return redirect(url_for('uploaded_file', filename=metrix_file))
+            ###待解决：直接调用send_from_directiory函数，下载的文件名称不正确，使用redirect_url方式，下载的文件名称正确。。
+            ###return send_from_directory(app.config['RESULT_FOLDER'], metrix_file)
+            ##end comment block
 
         else:
              flash('file type is not allowed.')
