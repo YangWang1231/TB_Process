@@ -34,8 +34,10 @@ function cyc_retrive_projects_status() {
                 function (response, status, xhr) {
                     if (response == "Processing")
                         alert("project is processing.");
-                    else if (response == "Finished")
+                    else if (response == "Finished") {
                         clearInterval(timerID)
+                        alert("project is finished. you can find it in the personal page")
+                    }
                 },
                 "text"
         );

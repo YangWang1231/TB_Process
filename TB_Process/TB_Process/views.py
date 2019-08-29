@@ -180,9 +180,22 @@ input:
 {
     'projectname' :  'xxxx'
 }
+return:
+type: string
+"None": can not find row in DB, should not happen
+"Finished"
+"Processing"
+"NOTSTART"
 '''
 @app.route('/project_status', methods=['GET'])
 def get_project_status():
+    prj_name=request.args.get('projectname')
+    prj_obj = Project.query.filter_by(projectname = prj_name).first()
+    if not prj_obj:
+        return "None"
+
+    return prj_obj.processresult 
+    #debug
     if 'access_count' not in session:
         session['access_count'] = 1
     else:
@@ -216,6 +229,7 @@ def upload_tb_system():
                                 user = userinstance, processresult = 'Processing')
             db.session.add(project)
             db.session.commit()
+            #Project.query.
             thread.start_new_thread( process_tb_system_fun, (os.path.join(path.projcet_upload, file.filename), path, project, ) )
 
             return "1"
