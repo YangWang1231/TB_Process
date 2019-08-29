@@ -52,9 +52,6 @@ def register():
     if form.validate_on_submit():
         user = User(name = form.username.data)
         user.set_password(form.password.data)
-        #user.filepath = createUserPath(user)
-        #user.store_to_db()
-        #ORM code, use in the future
         db.session.add(user)
         db.session.commit()
         flash('Congratulations, you are now a registered user!')
@@ -163,15 +160,9 @@ def process_tb_system_fun(system_zip_floder, path, project_obj):
     processfile.process_tb_system(system_zip_floder, path) 
     metrix_file = processfile.get_metrix_result_path()
     project_obj.processresult = 'Finished'
-    #在没有appcontext、requestcontext的情况下，只能使用数据库来保存状态
-    #session和appcontext都不能再使用
-    #url_for也不能使用
     db.session.add(project_obj)
     db.session.commit()
     return 
-    #没有appcontext，不能使用redirect
-    #with app.app_context():
-    #    return redirect(url_for('uploaded_file', filename=metrix_file))
 
 
 '''
