@@ -11,7 +11,6 @@ from flask import send_from_directory
 from flask_login import current_user, login_user, logout_user
 from TB_Process import app
 from TB_Process.forms import LoginForm, RegistrationForm, UploadForm
-#from TB_Process.models import get_User_by_name
 import TB_Process.store_db_sqlit3
 from TB_Process.module import User, Project
 from TB_Process.process_upload import Process_Html_Report
@@ -175,6 +174,23 @@ def process_tb_system_fun(system_zip_floder, path, project_obj):
     #    return redirect(url_for('uploaded_file', filename=metrix_file))
 
 
+'''
+process request for project status
+input:
+{
+    'projectname' :  'xxxx'
+}
+'''
+@app.route('/project_status', methods=['GET'])
+def get_project_status():
+    if 'access_count' not in session:
+        session['access_count'] = 1
+    else:
+        session['access_count'] = session['access_count'] + 1
+    
+    if session['access_count'] >= 10:
+        return 'Finished'
+    return 'Processing'
 
 from flask import session
 '''
