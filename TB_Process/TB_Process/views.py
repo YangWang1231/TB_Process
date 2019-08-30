@@ -7,6 +7,7 @@ import os
 from datetime import datetime
 from jinja2 import Template
 from flask import render_template, flash, redirect, url_for, request
+from flask import session
 from flask import send_from_directory
 from flask_login import current_user, login_user, logout_user
 from TB_Process import app
@@ -160,7 +161,7 @@ def process_tb_system_fun(system_zip_floder, path, project_obj):
     processfile = Process_Html_Report()
     processfile.process_tb_system(system_zip_floder, path) 
     metrix_file = processfile.get_metrix_result_path()
-    project_obj.processresult = 'Finished'
+    project_obj.process_status = 'Finished'
     db.session.add(project_obj)
     db.session.commit()
     return 
@@ -187,11 +188,11 @@ def get_project_status():
     dic = {"status":"", "filename":""}
     if not prj_obj:
         dic['status'] = "None" #should not happen
-    elif prj_obj.processresult == "Finished":
-        dic['status'] = prj_obj.processresult
+    elif prj_obj.process_status == "Finished":
+        dic['status'] = prj_obj.process_status
         dic["filename"] = "demo.docx"
     else:
-        dic['status'] = prj_obj.processresult
+        dic['status'] = prj_obj.process_status
 
     return json.dumps(dic)
 
@@ -206,7 +207,6 @@ def get_project_status():
         return 'Finished'
     return 'Processing'
 
-from flask import session
 '''
 process upload floder which contain a testbed system project contents
 '''
@@ -227,10 +227,9 @@ def upload_tb_system():
             file.save(os.path.join(path.projcet_upload, file.filename))
             #先建立工程的DB条目，并且project的初始状态为Processing
             project = Project( projectname = form_tb_system.project_name.data, 
-                                user = userinstance, processresult = 'Processing', date = datetime.now())
+                                user = userinstance, process_status = 'Processing', date = datetime.now(), result_path = path.result_alternative_path)
             db.session.add(project)
             db.session.commit()
-            
             #mutile thread
             thread.start_new_thread( process_tb_system_fun, (os.path.join(path.projcet_upload, file.filename), path, project, ) )
             return "1"
@@ -274,7 +273,7 @@ def logout():
 def uploaded_file():
     filename=request.args.get('metrics_filename')
     path = path_struct(session['current_user'] , session['current_project_name'] )
-    return send_from_directory(path.project_result, filename)
+    return send_from_directory(path.project_result, filename, as_attachment=True)
 
 
 
