@@ -65,7 +65,7 @@ def register():
 
 from thread import start_new_thread
 import time
-from TB_Process.test_thread import call_fun
+#from TB_Process.test_thread import call_fun
 
 #@app.route('/home' , methods=['POST'])
 @app.route('/home', methods=['GET', 'POST'])
@@ -280,10 +280,15 @@ def uploaded_file():
 def generate_table_value():
     items = []
     for i in range(1, 11):
-        i = str(i)
         # you just don't have to quote the keys
         dict == {}
-        an_item = dict(date="2012-02-" + i, projectname="testproject", floder ="here", value ="waiting")
+        if i % 2 :
+            status = "Finished"
+        else:
+            status = "Processing"
+        
+        i = str(i)
+        an_item = dict(date="2012-02-" + i, projectname="testproject", Status=status, Uploads = "upload floder", Results ="Result floder", value ="waiting")
         items.append(an_item)
 
     return items
@@ -298,3 +303,11 @@ def personalpage(username):
     items = generate_table_value()
     return render_template('project_info.html', items = items)
     #return render_template('personalpage.html', name = projects.projectname)
+
+@app.route('/result_floder', methods=['GET'])
+def get_result_floder():
+    return "1"
+
+@app.route('/upload_floder', methods=['GET'])
+def get_upload_floder():
+    return "2"

@@ -30,8 +30,9 @@
                         <tr class="table100-head">
                             <th class="column1">Date</th>
                             <th class="column2">Project Name</th>
-                            <th class="column3">Upload Floder</th>
-                            <th class="column4">Result Report</th>
+                            <th class="column3">Status</th>
+                            <th class="column4">Uploads</th>
+                            <th class="column5">Results</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -39,8 +40,21 @@
                         <tr>
                             <td class="column1">{{item.date}}</td>
                             <td class="column2">{{item.projectname}}</td>
-                            <td class="column3">{{item.floder}}</td>
-                            <td class="column4">{{item.value}}</td>
+                            <td class="column3">{{item.Status}}</td>
+                            <td class="column4">
+                                <font color="blue">
+                                    <a href="{{ url_for('get_upload_floder') }}"> {{item.Uploads}} </a>
+                                </font>
+                            </td>
+                            {%if item.Status == "Finished"%}
+                            <td class="column5">
+                                <font color="blue">
+                                    <a href= "{{ url_for('get_result_floder') }} "> {{item.Results}} </a>
+                                </font>
+                            </td>
+                            {%else%}
+                            <td class="column5">Not Avaiable</td>
+                            {%endif%}
                         </tr>
                         {%endfor%}
                           <!-- <tr>
