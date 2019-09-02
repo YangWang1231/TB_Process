@@ -49,7 +49,7 @@ class path_struct(object):
                 self.project_result = os.path.join(self.projcet_floder,'result')
                 #this field will be stored to DB, just a alternative path for there are sometime change basedir of UserData
                 #when retrive user files, just os.path.join(self.base_path, self.result_alternative_path)
-                self.result_alternative_path = os.path.join(projectname,'result') 
+                self.project_alternative_path = os.path.join(username,projectname) 
                 
     
 
@@ -113,7 +113,7 @@ class Project(db.Model):
     projectrowdata = Column(LargeBinary)
     process_status = Column(Text, server_default=text("'NOTSTART'"))
     date = Column(Text)
-    result_path = Column(Text)
+    project_path = Column(Text)
     #user = relationship(u'User')
 
 

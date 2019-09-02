@@ -16,6 +16,7 @@
 <!--===============================================================================================-->
 <link rel="stylesheet" type="text/css" href="/static/css/util.css">
 <link rel="stylesheet" type="text/css" href="/static/css/main-personal-page.css">
+
 <!--===============================================================================================-->
 {%endblock%}
 
@@ -43,13 +44,13 @@
                             <td class="column3">{{item.Status}}</td>
                             <td class="column4">
                                 <font color="blue">
-                                    <a href="{{ url_for('get_upload_floder') }}"> {{item.Uploads}} </a>
+                                    <a href="{{ url_for('get_upload_floder', projectname = item.projectname) }}"> {{item.Uploads}} </a>
                                 </font>
                             </td>
                             {%if item.Status == "Finished"%}
                             <td class="column5">
                                 <font color="blue">
-                                    <a href= "{{ url_for('get_result_floder') }} "> {{item.Results}} </a>
+                                    <a href="{{ url_for('get_result_floder') }} "> {{item.Results}} </a>
                                 </font>
                             </td>
                             {%else%}
@@ -57,56 +58,24 @@
                             {%endif%}
                         </tr>
                         {%endfor%}
-                          <!-- <tr>
-                            <td class="column1">2017-09-29 01:22</td>
-                            <td class="column2">200398</td>
-                            <td class="column3">iPhone X 64Gb Grey</td>
-                            <td class="column4">$999.00</td>
-                         </tr>
-                         <tr>
-                             <td class="column1">2017-09-28 05:57</td>
-                             <td class="column2">200397</td>
-                             <td class="column3">Samsung S8 Black</td>
-                             <td class="column4">$756.00</td>
-                         </tr>
-                         <tr>
-                             <td class="column1">2017-09-26 05:57</td>
-                             <td class="column2">200396</td>
-                             <td class="column3">Game Console Controller</td>
-                             <td class="column4">$22.00</td>
-                         </tr>
-                         <tr>
-                             <td class="column1">2017-09-25 23:06</td>
-                             <td class="column2">200392</td>
-                             <td class="column3">USB 3.0 Cable</td>
-                             <td class="column4">$10.00</td>
-                         </tr>
-                         <tr>
-                             <td class="column1">2017-09-24 05:57</td>
-                             <td class="column2">200391</td>
-                             <td class="column3">Smartwatch 4.0 LTE Wifi</td>
-                             <td class="column4">$199.00</td>
-                         </tr>
-                         <tr>
-                             <td class="column1">2017-09-23 05:57</td>
-                             <td class="column2">200390</td>
-                             <td class="column3">Camera C430W 4k</td>
-                             <td class="column4">$699.00</td>
-                         </tr>
-                         <tr>
-                             <td class="column1">2017-09-22 05:57</td>
-                             <td class="column2">200389</td>
-                             <td class="column3">Macbook Pro Retina 2017</td>
-                             <td class="column4">$2199.00</td>
-                         </tr>
-                         <tr>
-                             <td class="column1">2017-09-21 05:57</td>
-                             <td class="column2">200388</td>
-                             <td class="column3">Game Console Controller</td>
-                             <td class="column4">$999.00</td>
-                         </tr>-->
-
-
+                        <!-- <tr>
+                           <td class="column1">2017-09-29 01:22</td>
+                           <td class="column2">200398</td>
+                           <td class="column3">iPhone X 64Gb Grey</td>
+                           <td class="column4">$999.00</td>
+                        </tr>
+                        <tr>
+                            <td class="column1">2017-09-28 05:57</td>
+                            <td class="column2">200397</td>
+                            <td class="column3">Samsung S8 Black</td>
+                            <td class="column4">$756.00</td>
+                        </tr>
+                        <tr>
+                            <td class="column1">2017-09-26 05:57</td>
+                            <td class="column2">200396</td>
+                            <td class="column3">Game Console Controller</td>
+                            <td class="column4">$22.00</td>
+                        </tr> -->
                     </tbody>
                 </table>
             </div>
@@ -120,13 +89,15 @@
 {% block scripts %}
 
 <!--===============================================================================================-->
-<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+<script src="/static/vendor/jquery/jquery-3.2.1.min.js"></script>
 <!--===============================================================================================-->
-<script src="vendor/bootstrap/js/popper.js"></script>
-<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="/static/vendor/bootstrap/js/popper.js"></script>
+<script src="/static/vendor/bootstrap/js/bootstrap.min.js"></script>
 <!--===============================================================================================-->
-<script src="vendor/select2/select2.min.js"></script>
+<script src="/static/vendor/select2/select2.min.js"></script>
 <!--===============================================================================================-->
-<script src="js/main.js"></script>
+<script type="text/javascript" src="/static/js/process_project_page.js"></script>
+<!--===============================================================================================-->
+<script src="/static/js/main.js"></script>
 {%endblock%}
 

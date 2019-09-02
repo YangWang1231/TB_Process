@@ -23,6 +23,8 @@ from TB_Process.module import path_struct
 from TB_Process.global_context import set_path, get_path
 from TB_Process.unpack import unzip_file
 import json
+from sqlalchemy import and_
+
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])
@@ -227,7 +229,7 @@ def upload_tb_system():
             file.save(os.path.join(path.projcet_upload, file.filename))
             #先建立工程的DB条目，并且project的初始状态为Processing
             project = Project( projectname = form_tb_system.project_name.data, 
-                                user = userinstance, process_status = 'Processing', date = datetime.now(), result_path = path.result_alternative_path)
+                                user = userinstance, process_status = 'Processing', date = datetime.now(), project_path = path.project_alternative_path)
             db.session.add(project)
             db.session.commit()
             #mutile thread
@@ -277,18 +279,10 @@ def uploaded_file():
 
 
 
-def generate_table_value():
+def generate_table_value(projects):
     items = []
-    for i in range(1, 11):
-        # you just don't have to quote the keys
-        dict == {}
-        if i % 2 :
-            status = "Finished"
-        else:
-            status = "Processing"
-        
-        i = str(i)
-        an_item = dict(date="2012-02-" + i, projectname="testproject", Status=status, Uploads = "upload floder", Results ="Result floder", value ="waiting")
+    for project in projects:
+        an_item = dict(date=project.date, projectname=project.projectname , Status=project.process_status, Uploads = "upload floder", Results ="Result floder", value ="waiting")
         items.append(an_item)
 
     return items
@@ -296,18 +290,23 @@ def generate_table_value():
 @app.route('/personalpage/<username>')
 def personalpage(username):
     user = current_user._get_current_object()
-    projects = Project.query.filter_by(user = user).first()
+    projects = Project.query.filter_by(user = user).all()
     if projects is None:
         return render_template('personalpage.html', name = 'you have no projects currently')
     
-    items = generate_table_value()
+    items = generate_table_value(projects)
     return render_template('project_info.html', items = items)
-    #return render_template('personalpage.html', name = projects.projectname)
 
 @app.route('/result_floder', methods=['GET'])
 def get_result_floder():
     return "1"
 
-@app.route('/upload_floder', methods=['GET'])
-def get_upload_floder():
-    return "2"
+@app.route('/upload_floder/<projectname>', methods=['GET'])
+def get_upload_floder(projectname):
+    '''retrive upload floder path from DB get floder from file system'''
+    user = current_user._get_current_object()
+    cur_prj = db.session.query(Project).filter(and_(user.id == Project.userid, Project.projectname == projectname)).first()
+    prj_path = os.path.join(app.config['USER_DATA_PATH'], cur_prj.project_path)
+    file_path = os.path.join(prj_path,'upload')
+    filename = os.listdir(file_path)
+    return send_from_directory(file_path, filename[0], as_attachment=True)
