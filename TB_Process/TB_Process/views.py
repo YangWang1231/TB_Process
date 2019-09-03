@@ -287,15 +287,27 @@ def generate_table_value(projects):
 
     return items
 
-@app.route('/personalpage/<username>')
-def personalpage(username):
+@app.route('/personalpage')
+def personalpage():
+    #user = current_user._get_current_object()
+    #projects = Project.query.filter_by(user = user).all()
+    #if projects is None:
+    #    return render_template('personalpage.html', name = 'you have no projects currently')
+    
+    #items = generate_table_value(projects)
+    #return render_template('project_info.html', items = items)
+
+    page = request.args.get('page', 1, type=int)
     user = current_user._get_current_object()
-    projects = Project.query.filter_by(user = user).all()
-    if projects is None:
+    project_pagination = Project.query.filter_by(user = user).paginate(
+            page, per_page=app.config['FLASKY_POSTS_PER_PAGE'], error_out=False)
+
+    if project_pagination is None:
         return render_template('personalpage.html', name = 'you have no projects currently')
     
-    items = generate_table_value(projects)
-    return render_template('project_info.html', items = items)
+    items = project_pagination.items
+    return render_template('project_info.html', items = items, pagination=project_pagination)
+
 
 @app.route('/result_floder', methods=['GET'])
 def get_result_floder():
@@ -310,3 +322,6 @@ def get_upload_floder(projectname):
     file_path = os.path.join(prj_path,'upload')
     filename = os.listdir(file_path)
     return send_from_directory(file_path, filename[0], as_attachment=True)
+
+
+    

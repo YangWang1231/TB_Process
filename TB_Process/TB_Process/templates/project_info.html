@@ -1,4 +1,5 @@
-﻿    {% extends "layout.html" %}
+﻿{% extends "layout.html" %}
+{% import "_macros.html" as macros %}
 
 {% block head %}
 <!--===============================================================================================-->
@@ -58,30 +59,20 @@
                             {%endif%}
                         </tr>
                         {%endfor%}
-                        <!-- <tr>
-                           <td class="column1">2017-09-29 01:22</td>
-                           <td class="column2">200398</td>
-                           <td class="column3">iPhone X 64Gb Grey</td>
-                           <td class="column4">$999.00</td>
-                        </tr>
-                        <tr>
-                            <td class="column1">2017-09-28 05:57</td>
-                            <td class="column2">200397</td>
-                            <td class="column3">Samsung S8 Black</td>
-                            <td class="column4">$756.00</td>
-                        </tr>
-                        <tr>
-                            <td class="column1">2017-09-26 05:57</td>
-                            <td class="column2">200396</td>
-                            <td class="column3">Game Console Controller</td>
-                            <td class="column4">$22.00</td>
-                        </tr> -->
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
+
+{% if pagination %}
+<div class="pagination">
+    <center>
+        {{ macros.pagination_widget(pagination, 'personalpage') }}
+    </center>
+</div>
+{% endif %}
 {%endblock%}
 
 
