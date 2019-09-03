@@ -289,21 +289,13 @@ def generate_table_value(projects):
 
 @app.route('/personalpage')
 def personalpage():
-    #user = current_user._get_current_object()
-    #projects = Project.query.filter_by(user = user).all()
-    #if projects is None:
-    #    return render_template('personalpage.html', name = 'you have no projects currently')
-    
-    #items = generate_table_value(projects)
-    #return render_template('project_info.html', items = items)
-
     page = request.args.get('page', 1, type=int)
     user = current_user._get_current_object()
     project_pagination = Project.query.filter_by(user = user).paginate(
             page, per_page=app.config['FLASKY_POSTS_PER_PAGE'], error_out=False)
 
-    if project_pagination is None:
-        return render_template('personalpage.html', name = 'you have no projects currently')
+    if len(project_pagination.items) == 0:
+        return render_template('project_info.html')
     
     items = project_pagination.items
     return render_template('project_info.html', items = items, pagination=project_pagination)

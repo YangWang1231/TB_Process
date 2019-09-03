@@ -24,6 +24,9 @@
 
 {% block content %}
 <div class="limiter">
+    {% if not item %}
+    <h1>Hello , {{current_user.name}}!       You have no project currently </h1>
+    {%else%}
     <div class="container-table100">
         <div class="wrap-table100">
             <div class="table100">
@@ -42,16 +45,16 @@
                         <tr>
                             <td class="column1">{{item.date}}</td>
                             <td class="column2">{{item.projectname}}</td>
-                            <td class="column3">{{item.Status}}</td>
+                            <td class="column3">{{item.process_status}}</td>
                             <td class="column4">
                                 <font color="blue">
-                                    <a href="{{ url_for('get_upload_floder', projectname = item.projectname) }}"> {{item.Uploads}} </a>
+                                    <a href="{{ url_for('get_upload_floder', projectname = item.projectname) }}"> Upload floder </a>
                                 </font>
                             </td>
-                            {%if item.Status == "Finished"%}
+                            {%if item.process_status == "Finished"%}
                             <td class="column5">
                                 <font color="blue">
-                                    <a href="{{ url_for('get_result_floder') }} "> {{item.Results}} </a>
+                                    <a href="{{ url_for('get_result_floder') }} "> Result floder </a>
                                 </font>
                             </td>
                             {%else%}
@@ -64,6 +67,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
 </div>
 
 {% if pagination %}
