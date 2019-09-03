@@ -114,12 +114,6 @@ def contact():
         message='Your contact page.'
     )
 
-@app.route('/personpage')
-def personpage():
-    """Renders the contact page."""
-    template = Template('<H1>Hello {{ name }}!</H1>')
-    string = template.render(name = current_user.username)
-    return string
 
 @app.route('/about')
 def about():
@@ -301,9 +295,29 @@ def personalpage():
     return render_template('project_info.html', items = items, pagination=project_pagination)
 
 
-@app.route('/result_floder', methods=['GET'])
-def get_result_floder():
-    return "1"
+def compress_floderfiles(floder_path):
+    '''compress all files under a floder'''
+    import zipfile
+    
+    filelist = os.listdir(floder_path)
+    zipf = zipfile.ZipFile(os.path.join(floder_path,'result.zip'), 'w', zipfile.ZIP_DEFLATED)
+    for file in filelist:
+        zipf.write(os.path.join(floder_path, file), file)
+    zipf.close()
+
+    return 'result.zip'
+
+@app.route('/result_floder/<projectname>', methods=['GET'])
+def get_result_floder(projectname):
+    '''retrive result floder path from DB get floder from file system'''
+    user = current_user._get_current_object()
+    cur_prj = db.session.query(Project).filter(and_(user.id == Project.userid, Project.projectname == projectname)).first()
+    #prj_path = os.path.join(app.config['USER_DATA_PATH'], cur_prj.project_path)
+    prj_path = os.path.join(app.config['USER_DATA_PATH'], r'pene_wang\fffddd')
+    file_path = os.path.join(prj_path,'result')
+    filename = compress_floderfiles(file_path)
+    return send_from_directory(file_path, filename, as_attachment=True)
+
 
 @app.route('/upload_floder/<projectname>', methods=['GET'])
 def get_upload_floder(projectname):

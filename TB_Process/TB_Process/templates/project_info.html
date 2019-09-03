@@ -24,7 +24,7 @@
 
 {% block content %}
 <div class="limiter">
-    {% if not item %}
+    {% if not items %}
     <h1>Hello , {{current_user.name}}!       You have no project currently </h1>
     {%else%}
     <div class="container-table100">
@@ -54,7 +54,7 @@
                             {%if item.process_status == "Finished"%}
                             <td class="column5">
                                 <font color="blue">
-                                    <a href="{{ url_for('get_result_floder') }} "> Result floder </a>
+                                    <a href="{{ url_for('get_result_floder', projectname = item.projectname) }} "> Result floder </a>
                                 </font>
                             </td>
                             {%else%}
