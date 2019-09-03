@@ -150,7 +150,7 @@ class rule_reports(object):
                         self.result_list.extend(self.get_rule_table_contents(table_tag))
             return self.result_list
 
-        #judege if table is 8114 analyse result
+    #judege if table is 8114 analyse result
     #取出表头判断是否为rule table，表头格式如下：
     #<TR><th > Number of Violations </th><th > LDRA Code </th><th > Mandatory
     #Standards </th><th > GJB_8114 Code

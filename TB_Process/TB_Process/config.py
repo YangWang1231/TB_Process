@@ -22,3 +22,4 @@ class Config(object):
     METRICS_REPORT_PATH =  r'C:\Users\Administrator\source\repos\TB_Process\TB_Process\TB_Process\analyse_html'
     METRICS_REPORT_TEMPLATE = u'质量度量.docx'
     FLASKY_POSTS_PER_PAGE = 10
+    ANALYSE_RESULT_FILENAME = 'result.zip'

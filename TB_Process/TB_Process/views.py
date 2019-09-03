@@ -272,7 +272,7 @@ def uploaded_file():
     return send_from_directory(path.project_result, filename, as_attachment=True)
 
 
-
+#no use currently
 def generate_table_value(projects):
     items = []
     for project in projects:
@@ -300,10 +300,9 @@ def compress_floderfiles(floder_path):
     import zipfile
     
     filelist = os.listdir(floder_path)
-    zipf = zipfile.ZipFile(os.path.join(floder_path,'result.zip'), 'w', zipfile.ZIP_DEFLATED)
-    for file in filelist:
-        zipf.write(os.path.join(floder_path, file), file)
-    zipf.close()
+    with zipfile.ZipFile(os.path.join(floder_path,app.config['ANALYSE_RESULT_FILENAME']), 'w', zipfile.ZIP_DEFLATED) as zipf:
+        for file in filelist:
+            zipf.write(os.path.join(floder_path, file), file)
 
     return 'result.zip'
 
@@ -312,11 +311,13 @@ def get_result_floder(projectname):
     '''retrive result floder path from DB get floder from file system'''
     user = current_user._get_current_object()
     cur_prj = db.session.query(Project).filter(and_(user.id == Project.userid, Project.projectname == projectname)).first()
-    #prj_path = os.path.join(app.config['USER_DATA_PATH'], cur_prj.project_path)
-    prj_path = os.path.join(app.config['USER_DATA_PATH'], r'pene_wang\fffddd')
+    #prj_path = os.path.join(app.config['USER_DATA_PATH'], cur_prj.project_path) #real code
+    prj_path = os.path.join(app.config['USER_DATA_PATH'], r'pene_wang\fffddd') #debug code
     file_path = os.path.join(prj_path,'result')
-    filename = compress_floderfiles(file_path)
-    return send_from_directory(file_path, filename, as_attachment=True)
+    if app.config['ANALYSE_RESULT_FILENAME'] not in os.listdir(file_path):
+        compress_floderfiles(file_path)
+
+    return send_from_directory(file_path, app.config['ANALYSE_RESULT_FILENAME'], as_attachment=True)
 
 
 @app.route('/upload_floder/<projectname>', methods=['GET'])
