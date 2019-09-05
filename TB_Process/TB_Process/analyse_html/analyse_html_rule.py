@@ -147,16 +147,11 @@ class rule_reports(object):
         if len(table_list) != 1:
             pass
 
-        #self.violation_num = v_num
-        #self.LDRA_code = l_code
-        #self.mandatory_std = man_std
-        #self.standard_code = std_code
-        #self.detail_dict = detail_dict
-
         #begin to write rule result from the first empty row
         default_analyse_result = u'经分析无问题'
         row = table_list[0].rows[1]
         for i, e in enumerate(self.result_list):
+            cell0, cell1, cell2, _, _ = row.cells
             row.cells[0].text = str(i + 1)
             row.cells[1].text = e.standard_code
             row.cells[2].text = e.mandatory_std
@@ -164,8 +159,11 @@ class rule_reports(object):
                 line_string = ', '.join(str(e) for e in line_list)
                 row.cells[3].text = ' '.join((func_name, line_string))
                 row.cells[4].text = default_analyse_result
+                cell0_last, cell1_last, cell2_last, _, _ = row.cells
                 row = table_list[0].add_row()
-            docx_obj.save(filepath)        
+            cell0.merge(cell0_last)
+            cell1.merge(cell1_last)
+            cell2.merge(cell2_last)
 
         docx_obj.save(filepath)
         return
@@ -300,7 +298,6 @@ class rule_reports(object):
                 a_tag = td_list[0].find('a')       
                 file_name = a_tag['href']
                 ref_link = self.base_url + file_name
-                    
                 v_info = violations_info(ref_link)
                 v_detail_dict = v_info.get_violations_detail()
                 l_code = td_list[1].string
@@ -317,13 +314,13 @@ class rule_reports(object):
         从java script源代码中抽取出mandator standard string的内容
         '''
         match_list = self.mandatory_standard_regex.findall(script_string)
-        mandatory_standard_string = match_list[1]
+        mandatory_standard_string = match_list[1].strip('\'')
         return mandatory_standard_string 
 
     def strip_standard_rule_number(self, script_string):
         '''从java script源代码中抽取出特定标准的序号'''
         match_list = self.rule_pattern_regex.findall(script_string)
-        standard_rule_number_string = match_list[1]
+        standard_rule_number_string = match_list[1].strip('\'')
         return standard_rule_number_string 
 
 from store_db_sqlit3 import process_db
@@ -333,7 +330,8 @@ if __name__ == "__main__":
     from docx.shared import Inches
     import os.path
 
-    html = u"file:///C:/LDRA_Workarea/example_tbwrkfls/example.rps.htm"
+    #html = u"file:///C:/LDRA_Workarea/example_tbwrkfls/example.rps.htm"
+    html = u"file:///C:/Users/Administrator/source/repos/new/TB_Process/TB_Process/TB_Process/extract_floder/example_tbwrkfls/example.rps.htm"
     report = rule_reports()
     report.analyse_html(html)
 
