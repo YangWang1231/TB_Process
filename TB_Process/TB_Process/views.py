@@ -157,6 +157,7 @@ def process_tb_system_fun(system_zip_floder, path, project_obj):
     processfile = Process_Html_Report()
     processfile.process_tb_system(system_zip_floder, path) 
     metrix_file = processfile.get_metrix_result_path()
+    rule_file = processfile.get_rule_result_path()
     project_obj.process_status = 'Finished'
     db.session.add(project_obj)
     db.session.commit()

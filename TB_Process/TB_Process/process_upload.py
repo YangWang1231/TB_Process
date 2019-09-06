@@ -6,6 +6,7 @@ from    TB_Process import app
 import  os
 from    os.path import join, getsize, splitext
 from    analyse_html.analyse_html_matrix import process_metrix_repot
+from    analyse_html.analyse_html_rule import rule_reports
 from    docx import Document
 
 class Process_Html_Report(object):
@@ -15,12 +16,13 @@ class Process_Html_Report(object):
         self.metricsfile_path = ""
         self.htmlfile_path = ""
         self.metrics_result_report = ""
-        
+        self.rulefile_path = ''
+        self.rule_result_report = ''
 
     @staticmethod
-    def find_metrix_result_file(floder):
+    def find_metrics_rule_result_file(floder):
         '''
-        从文件夹中找到metrix report的html文件：
+        从文件夹中找到metrix report和rule report的html文件：
         floder文件夹中可能包含子文件夹
         1.判断floder中是否存在metrix文件，如果不存在则在子文件夹中查找
         如果只有一个文件夹，那么直接进入文件夹
@@ -40,10 +42,13 @@ class Process_Html_Report(object):
                 return None
         else:
             finale_floder = os.path.join(floder, dirs[0])
-            return Process_Html_Report.find_metrix_result_file(finale_floder)
+            return Process_Html_Report.find_metrics_rule_result_file(finale_floder)
 
     def get_metrix_result_path(self):
         return os.path.basename(self.metrics_result_report)
+
+    def get_rule_result_path(self):
+        return os.path.basename(self.rule_result_report)
 
     def process_tb_system(self, system_zip_floder, path):
         '''
@@ -59,22 +64,29 @@ class Process_Html_Report(object):
         ''' 
 
         dst_floder = unzip_file(system_zip_floder, path.extract)
-        #dst_floder = unzip_file(system_zip_floder ,  app.config['EXTRACT_FOLDER'])
-        self.metrix_filename , self.rule_filename = Process_Html_Report.find_metrix_result_file(dst_floder)
+        self.metrix_filename , self.rule_filename = Process_Html_Report.find_metrics_rule_result_file(dst_floder)
 
+        #begin produce metrix report
         report = process_metrix_repot()
         filename = ''.join((Process_Html_Report.url_type, self.metrix_filename)) 
         report.analyse_html(filename)
-
         #以模板为基础，生成度量结果文档
-        template_file = os.path.join(app.config['METRICS_REPORT_PATH'],app.config['METRICS_REPORT_TEMPLATE'])
+        template_file = os.path.join(app.config['REPORT_TEMPLATE_PATH'],app.config['METRICS_REPORT_TEMPLATE'])
         document = Document(template_file)
-
         result_file = 'demo.docx'
-        #self.metrics_result_report = os.path.join(app.config['RESULT_FOLDER'],result_file)
         self.metrics_result_report = os.path.join(path.project_result, result_file)
-
         report.store_matrix_to_docx(document, self.metrics_result_report)
+        
+        #begin produce rule report
+        report = rule_reports()
+        filename = ''.join((Process_Html_Report.url_type, self.rule_filename))
+        report.analyse_html(filename)
+        #以模板为基础，生成规则分析结果文档
+        template_file = os.path.join(app.config['REPORT_TEMPLATE_PATH'],app.config['RULE_REPORT_TEMPLATE'])
+        document = Document(template_file)
+        result_file = 'rule_result.docx'
+        self.rule_result_report = os.path.join(path.project_result, result_file)
+        report.store_rule_to_docx(document, self.rule_result_report)
 
         return 
 

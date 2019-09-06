@@ -6,7 +6,7 @@ import re
 #python 2 code
 from    urllib import urlopen
 from    bs4 import BeautifulSoup
-
+import os.path
 
 
 class violations_info(object):
@@ -220,7 +220,8 @@ class rule_reports(object):
         self.html = urlopen(file_url)
         self.bsObj = BeautifulSoup(self.html.read(), features="html.parser") 
         index = file_url.rfind('/')
-        self.base_url = file_url[:index + 1] #init base url
+        #self.base_url = file_url[:index + 1] #init base url
+        self.base_url = os.path.dirname(file_url)
 
         tablelist = self.bsObj.find_all("table")
         #存放多个表的分析结果，因此使用list
@@ -297,7 +298,8 @@ class rule_reports(object):
         if v_num != 0:
                 a_tag = td_list[0].find('a')       
                 file_name = a_tag['href']
-                ref_link = self.base_url + file_name
+                #ref_link = self.base_url + file_name
+                ref_link = os.path.join(self.base_url, file_name)
                 v_info = violations_info(ref_link)
                 v_detail_dict = v_info.get_violations_detail()
                 l_code = td_list[1].string
@@ -329,9 +331,15 @@ if __name__ == "__main__":
     from docx import Document
     from docx.shared import Inches
     import os.path
+    from config import _config_data
 
-    #html = u"file:///C:/LDRA_Workarea/example_tbwrkfls/example.rps.htm"
-    html = u"file:///C:/Users/Administrator/source/repos/new/TB_Process/TB_Process/TB_Process/extract_floder/example_tbwrkfls/example.rps.htm"
+    dev_location = _config_data['dev_location']
+
+    if dev_location == 'home':
+        html = u"file:///C:/Users/Administrator/source/repos/new/TB_Process/TB_Process/TB_Process/extract_floder/example_tbwrkfls/example.rps.htm"
+    else:
+        html = u"file:///C:/LDRA_Workarea/example_tbwrkfls/example.rps.htm"
+
     report = rule_reports()
     report.analyse_html(html)
 
