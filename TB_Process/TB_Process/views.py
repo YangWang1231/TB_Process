@@ -307,27 +307,33 @@ def compress_floderfiles(floder_path):
 
     return 'result.zip'
 
-@app.route('/result_floder/<projectname>', methods=['GET'])
-def get_result_floder(projectname):
-    '''retrive result floder path from DB get floder from file system'''
+
+
+def get_download_filepath(projectname, flodername):
+    '''retrive floder path from DB get floder from file system
+    Args:
+        projectname: current project name in DB-projects table
+        flodername: 'result' or 'upload'
+    return value: 
+        file_path: the path of download file(must be a rar/zip file)
+    '''
     user = current_user._get_current_object()
     cur_prj = db.session.query(Project).filter(and_(user.id == Project.userid, Project.projectname == projectname)).first()
-    #prj_path = os.path.join(app.config['USER_DATA_PATH'], cur_prj.project_path) #real code
-    prj_path = os.path.join(app.config['USER_DATA_PATH'], r'pene_wang\fffddd') #debug code
-    file_path = os.path.join(prj_path,'result')
+    prj_path = os.path.join(app.config['USER_DATA_PATH'], cur_prj.project_path) 
+    file_path = os.path.join(prj_path,flodername)
+    return file_path
+
+@app.route('/result_floder/<projectname>', methods=['GET'])
+def get_result_floder(projectname):
+    file_path = get_download_filepath(projectname, 'result')
     if app.config['ANALYSE_RESULT_FILENAME'] not in os.listdir(file_path):
         compress_floderfiles(file_path)
-
     return send_from_directory(file_path, app.config['ANALYSE_RESULT_FILENAME'], as_attachment=True)
 
 
 @app.route('/upload_floder/<projectname>', methods=['GET'])
 def get_upload_floder(projectname):
-    '''retrive upload floder path from DB get floder from file system'''
-    user = current_user._get_current_object()
-    cur_prj = db.session.query(Project).filter(and_(user.id == Project.userid, Project.projectname == projectname)).first()
-    prj_path = os.path.join(app.config['USER_DATA_PATH'], cur_prj.project_path)
-    file_path = os.path.join(prj_path,'upload')
+    get_download_filepath(projectname, 'upload')
     filename = os.listdir(file_path)
     return send_from_directory(file_path, filename[0], as_attachment=True)
 
