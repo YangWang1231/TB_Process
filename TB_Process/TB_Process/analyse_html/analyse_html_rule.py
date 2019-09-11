@@ -151,6 +151,10 @@ class rule_reports(object):
         default_analyse_result = u'经分析无问题'
         row = table_list[0].rows[1]
         for i, e in enumerate(self.result_list):
+            #debug
+            if i >= 15:
+                docx_obj.save(filepath)
+                return
             cell0, cell1, cell2, _, _ = row.cells
             row.cells[0].text = str(i + 1)
             row.cells[1].text = e.standard_code
@@ -167,46 +171,7 @@ class rule_reports(object):
 
         docx_obj.save(filepath)
         return
-
-    def write_to_table2(self, source_line_table, metrix_table, complexity_fanout_table):
-        """
-        将本文件的metrix信息写入表格
-        """
-
-        #填写各文件代码行数
-        index= len(source_line_table.rows)
-        new_cells = source_line_table.add_row().cells
-        new_cells[0].text = str(index)
-        new_cells[1].text = self.filename
-        new_cells[2].text = str(self.reformated_code_information.executeable_ref_lines)
-        #填写静态质量度量
-        index = len(metrix_table.rows)
-        new_cells = metrix_table.add_row().cells
-        (max_line, min_line)= self.get_max_min_lines()
-        metrix_tuple = (str(index), self.filename, str(self.reformated_code_information.number_of_procedure), '/'.join(str(e)  for e in (max_line, min_line )))
-        
-        for i, e in enumerate(metrix_tuple):
-            new_cells[i].text = e
-
-        #填写复杂度、扇出数表格
-        index = len(complexity_fanout_table.rows)
-        
-        complexity_list = []
-        for e in self.complexity_metrics:
-            row_list = [index, e.function_name, e.Cyclomatic_information]
-            for m in self.fanout_info:
-                if m.function_name == e.function_name:
-                    row_list.append(m.fanout)
-            if row_list[2] > 10 or row_list[3] > 7:
-                complexity_list.append(row_list)
-            index += 1
-            
-        for e in complexity_list:
-            new_cells = complexity_fanout_table.add_row().cells
-            for i, m in enumerate(e):
-                new_cells[i].text = str(m)
-        return
-    
+   
     def analyse_html(self,file_url):
         '''
         脚本文件主函数:处理一个htlm文件,将文件中规则违背情况抽取出来，放入列表，并返回
@@ -252,8 +217,8 @@ class rule_reports(object):
                 return False
         elif th_list[0].string.strip() == u'Number of Violations' and \
                 th_list[1].string.strip() == u'LDRA Code' and \
-                th_list[2].string.strip() == u'Mandatory Standards' and \
-                th_list[3].string.strip() == u"GJB_8114 Code": 
+                (th_list[2].string.strip() == u'Mandatory Standards' or th_list[2].string.strip() == u'Required Standards') and \
+                (th_list[3].string.strip() == u"GJB_8114 Code" or th_list[3].string.strip() == u"MISRA-C++:2008 Code"): 
                         return True
     
     def get_rule_table_contents(self, table_tag):
@@ -338,7 +303,8 @@ if __name__ == "__main__":
     if dev_location == 'home':
         html = u"file:///C:/Users/Administrator/source/repos/new/TB_Process/TB_Process/TB_Process/extract_floder/example_tbwrkfls/example.rps.htm"
     else:
-        html = u"file:///C:/LDRA_Workarea/example_tbwrkfls/example.rps.htm"
+        #html = u"file:///C:/LDRA_Workarea/example_tbwrkfls/example.rps.htm"
+        html = u"file:///C:/LDRA_Workarea/test_data/CentralConsole_1.rps.htm"
 
     report = rule_reports()
     report.analyse_html(html)
