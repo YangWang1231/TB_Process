@@ -134,6 +134,58 @@ class rule_reports(object):
         db_obj.commit()
         return         
 
+        
+    def store_rule_to_docx2(self,template_file_path, filepath = './rule_result.docx'):
+        '''
+        store rule report content to docx file.
+        Args:
+            template_file_path: template file path
+            filepath: path to store docx_obj
+        '''
+
+        docx_obj = Document(template_file_path)
+        table_list = docx_obj.tables
+
+        #should not happen
+        if len(table_list) != 1:
+            pass
+
+        #begin to write rule result from the first empty row
+        default_analyse_result = u'经分析无问题'
+        filepath = './result'
+        row = table_list[0].rows[1]
+
+        k = 0
+        for i, e in enumerate(self.result_list):
+            k = k+1
+            if k >= 5:
+                k = 0
+                filename = ''.join((filepath, str(i/5),'.docx'))
+                docx_obj.save(filename)
+                print('output %s\n.', filename)
+                docx_obj = Document(template_file_path)
+                table_list = docx_obj.tables
+                row = table_list[0].rows[1]
+
+            cell0, cell1, cell2, _, _ = row.cells
+            row.cells[0].text = str(i + 1)
+            row.cells[1].text = e.standard_code
+            row.cells[2].text = e.mandatory_std
+            for func_name, line_list in e.detail_dict.items():
+                line_string = ', '.join(str(e) for e in line_list)
+                row.cells[3].text = ' '.join((func_name, line_string))
+                row.cells[4].text = default_analyse_result
+                cell0_last, cell1_last, cell2_last, _, _ = row.cells
+                row = table_list[0].add_row()
+            cell0.merge(cell0_last)
+            cell1.merge(cell1_last)
+            cell2.merge(cell2_last)
+
+        
+        docx_obj.save('./rule_result.docx')
+        return
+    
+
     def store_rule_to_docx(self,docx_obj, filepath = './rule_result.docx'):
         '''
         store rule report content to docx file.
@@ -149,11 +201,16 @@ class rule_reports(object):
 
         #begin to write rule result from the first empty row
         default_analyse_result = u'经分析无问题'
-        row = table_list[0].rows[1]
+        filepath = './result'
+
         for i, e in enumerate(self.result_list):
+            index = len(table_list[0].rows)
+            row = table_list[0].rows[index]
             #debug
-            if i >= 15:
-                docx_obj.save(filepath)
+            if i >= 5:
+                filename = ''.join((filepath, str(i/5),'.docx'))
+                docx_obj.save(filename)
+                docx_obj.close()
                 return
             cell0, cell1, cell2, _, _ = row.cells
             row.cells[0].text = str(i + 1)
@@ -244,7 +301,8 @@ class rule_reports(object):
         处理一个table_row
         从table row中获取每一条规则的违背情况。如果这个规则的违背情况为0，返回None
         如果违背情况大于0，那么返回一个rule_table_row对象
-    
+        如果违背情况超过
+
         Args:
             table_row: 包含一条规则违背情况的tag，应该是以<tr/>包含.
        
@@ -313,6 +371,10 @@ if __name__ == "__main__":
     curpath = os.path.dirname(os.path.abspath(__file__))
     filepath = os.path.join(curpath, u'规则模板.docx')
     document = Document(filepath)
-    report.store_rule_to_docx(document)
+    
+    report.store_rule_to_docx2(filepath)
+    
+    #report.store_rule_to_docx(document)
+
     #db_obj = process_db()
     #report.store_rule_repot_to_db(db_obj)
