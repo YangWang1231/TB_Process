@@ -134,7 +134,44 @@ class rule_reports(object):
         db_obj.commit()
         return         
 
+    @staticmethod
+    def add_new_table(docx_obj):
+        from docx.enum.text import WD_ALIGN_PARAGRAPH
+
+        table_title_para = docx_obj.add_paragraph("error code number")
+        paragraph_format = table_title_para.paragraph_format
+        paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
+
+        table_number = len(docx_obj.tables)
+        table_new = docx_obj.add_table(rows= 2, cols=5, style='Table Grid')
+
+        row = docx_obj.tables[0].rows[0]
+        row_new = table_new.rows[0]
+        for dst,src in zip(row_new.cells, row.cells):
+            dst.text = src.text
+
+        file_path = './rule_result.docx'
+        docx_obj.save(file_path)
+        return table_new
         
+    def write_to_table(self, default_analyse_result, e, i, table):
+        row = table.rows[1]
+        cell0, cell1, cell2, _, _ = row.cells
+        row.cells[0].text = str(i + 1)
+        row.cells[1].text = e.standard_code
+        row.cells[2].text = e.mandatory_std
+        
+        for func_name, line_list in e.detail_dict.items():
+            line_string = ', '.join(str(e) for e in line_list)
+            row.cells[3].text = ' '.join((func_name, line_string))
+            row.cells[4].text = default_analyse_result
+            cell0_last, cell1_last, cell2_last, _, _ = row.cells
+            row = table.add_row()
+        cell0.merge(cell0_last)
+        cell1.merge(cell1_last)
+        cell2.merge(cell2_last)
+        return
+
     def store_rule_to_docx2(self,template_file_path, filepath = './rule_result.docx'):
         '''
         store rule report content to docx file.
@@ -153,38 +190,16 @@ class rule_reports(object):
         #begin to write rule result from the first empty row
         default_analyse_result = u'经分析无问题'
         filepath = './result'
-        row = table_list[0].rows[1]
 
-        k = 0
+        table_last = table_list[-1]
         for i, e in enumerate(self.result_list):
-            k = k+1
-            if k >= 5:
-                k = 0
-                filename = ''.join((filepath, str(i/5),'.docx'))
-                docx_obj.save(filename)
-                print('output %s\n.', filename)
-                docx_obj = Document(template_file_path)
-                table_list = docx_obj.tables
-                row = table_list[0].rows[1]
+            self.write_to_table(default_analyse_result, e, i, table_last)
+            table_last = rule_reports.add_new_table(docx_obj)
 
-            cell0, cell1, cell2, _, _ = row.cells
-            row.cells[0].text = str(i + 1)
-            row.cells[1].text = e.standard_code
-            row.cells[2].text = e.mandatory_std
-            for func_name, line_list in e.detail_dict.items():
-                line_string = ', '.join(str(e) for e in line_list)
-                row.cells[3].text = ' '.join((func_name, line_string))
-                row.cells[4].text = default_analyse_result
-                cell0_last, cell1_last, cell2_last, _, _ = row.cells
-                row = table_list[0].add_row()
-            cell0.merge(cell0_last)
-            cell1.merge(cell1_last)
-            cell2.merge(cell2_last)
-
-        
         docx_obj.save('./rule_result.docx')
         return
     
+    from docx.enum.text import WD_ALIGN_PARAGRAPH
 
     def store_rule_to_docx(self,docx_obj, filepath = './rule_result.docx'):
         '''
@@ -195,23 +210,26 @@ class rule_reports(object):
         '''
         table_list = docx_obj.tables
 
-        #should not happen
+        #should not happen, init state, there should be only one table.
         if len(table_list) != 1:
             pass
 
         #begin to write rule result from the first empty row
         default_analyse_result = u'经分析无问题'
-        filepath = './result'
+        row = table_list[0].rows[1]
 
         for i, e in enumerate(self.result_list):
-            index = len(table_list[0].rows)
-            row = table_list[0].rows[index]
-            #debug
-            if i >= 5:
-                filename = ''.join((filepath, str(i/5),'.docx'))
-                docx_obj.save(filename)
-                docx_obj.close()
-                return
+            #one rule result for each iteration            
+            table_title_para = docx_obj.add_paragraph(e.standard_code)
+            paragraph_format = paragraph.paragraph_format
+            paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
+
+            docx_obj.add_table(rows=2, cols=5)
+            row_new = docx_obj.tables[i+1].rows[0]
+            for dst,src in zip(row_new.cells, row.cells):
+                dst.text = src.text
+            docx_obj.save(file_path)
+
             cell0, cell1, cell2, _, _ = row.cells
             row.cells[0].text = str(i + 1)
             row.cells[1].text = e.standard_code
@@ -225,6 +243,13 @@ class rule_reports(object):
             cell0.merge(cell0_last)
             cell1.merge(cell1_last)
             cell2.merge(cell2_last)
+            docx_obj.save(filepath)
+            docx_obj.add_table(rows=2, cols=5)
+            row_new = docx_obj.tables[i].rows[0]
+            for dst,src in zip(row_new.cells, row.cells):
+                dst.text = src.text
+
+
 
         docx_obj.save(filepath)
         return
@@ -348,13 +373,46 @@ class rule_reports(object):
         standard_rule_number_string = match_list[1].strip('\'')
         return standard_rule_number_string 
 
+
+#def add_new_table(docx_obj):
+#    from docx.enum.text import WD_ALIGN_PARAGRAPH
+
+#    table_title_para = docx_obj.add_paragraph("error code number")
+#    paragraph_format = table_title_para.paragraph_format
+#    paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
+
+#    table_number = len(docx_obj.tables)
+#    docx_obj.add_table(rows= 2, cols=5, style='Table Grid')
+
+#    row = docx_obj.tables[0].rows[0]
+#    row_new = docx_obj.tables[table_number].rows[0]
+#    for dst,src in zip(row_new.cells, row.cells):
+#        dst.text = src.text
+
+#    file_path = './rule_result.docx'
+#    docx_obj.save(file_path)
+
+
 from store_db_sqlit3 import process_db
+def test_table():
+    from docx.enum.text import WD_ALIGN_PARAGRAPH
+
+    #以模板为基础，生成度量结果文档
+    curpath = os.path.dirname(os.path.abspath(__file__))
+    filepath = os.path.join(curpath, u'规则模板.docx')
+    docx_obj = Document(filepath)
+
+    for i in range(100):
+        add_new_table(docx_obj)
+
 
 if __name__ == "__main__":
     from docx import Document
     from docx.shared import Inches
     import os.path
     from config import _config_data
+
+    #test_table()
 
     dev_location = _config_data['dev_location']
 
@@ -371,7 +429,7 @@ if __name__ == "__main__":
     curpath = os.path.dirname(os.path.abspath(__file__))
     filepath = os.path.join(curpath, u'规则模板.docx')
     document = Document(filepath)
-    
+
     report.store_rule_to_docx2(filepath)
     
     #report.store_rule_to_docx(document)
