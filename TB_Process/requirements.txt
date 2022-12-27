@@ -23,7 +23,7 @@ python-dateutil==2.8.0
 python-docx==0.8.10
 python-editor==1.0.4
 rarfile==3.0
-setuptools==40.8.0
+setuptools==65.5.1
 six==1.12.0
 soupsieve==1.9.2
 sqlacodegen==2.1.0
